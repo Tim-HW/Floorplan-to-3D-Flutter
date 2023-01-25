@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './home.dart';
 import 'information.dart';
+import 'picture/rendering.dart';
 
 void main() {
   runApp(const MyApp());

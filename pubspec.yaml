@@ -41,10 +41,15 @@ dependencies:
   video_player: ^2.4.8
   flutter_easyloading: ^3.0.5
   http: ^0.13.5
+  flutter_cube: ^0.1.1
+
+
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.11.0"
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -68,6 +73,9 @@ flutter:
   assets:
     - assets/RMA-logo.png
     - assets/VR.png
+    - assets/cubo.step
+    - assets/cubo.stl
+    - assets/cubo.obj
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
