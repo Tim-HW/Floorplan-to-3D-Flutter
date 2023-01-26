@@ -4,8 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'rendering.dart';
-
+import '../rendering/CubeRendering.dart';
+import '../rendering/ViewerRendering.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
 
 class ImageInput extends StatefulWidget {
   @override
@@ -21,8 +24,8 @@ class _ImageInputState extends State<ImageInput> {
 
   send() async {
     // Init the Type of request
-    final request =
-        http.MultipartRequest("POST", Uri.parse("https://shoothouse.cylab.be/"));
+    final request = http.MultipartRequest(
+        "POST", Uri.parse("https://shoothouse.cylab.be/"));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
@@ -164,41 +167,49 @@ class _ImageInputState extends State<ImageInput> {
                           ),
                         )
                       : Column(children: [
-                        SizedBox(
-                          width: 230,
-                          child: ElevatedButton(
-                            onPressed: () { },
-                          style: ButtonStyle(
-                            backgroundColor:
-                            MaterialStateProperty.all(Colors.grey)),
-                            child:
-                              Padding(padding: const EdgeInsets.all(4),
-                                child: Row(children: const [Text('Image uploaded successfully')
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),SizedBox(
-                      width: 230,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Rendering()),
-                          );
-                        },
-                        style: ButtonStyle(
-                            backgroundColor:
-                            MaterialStateProperty.all(Colors.red)),
-                        child:
-                        Padding(padding: const EdgeInsets.all(4),
-                          child: Row(children: const [Icon(Icons.download),Text('       Open 3D viewer')
-                          ],
+                          SizedBox(
+                            width: 230,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.grey)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Row(
+                                  children: const [
+                                    Text('Image uploaded successfully')
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ])
+                          SizedBox(
+                            width: 230,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RenderingVeiwer()),
+                                );
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.red)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Row(
+                                  children: const [
+                                    Icon(Icons.download),
+                                    Text('       Open 3D viewer')
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ])
                 ])
               : Column(children: [
                   SizedBox(

@@ -42,6 +42,10 @@ dependencies:
   flutter_easyloading: ^3.0.5
   http: ^0.13.5
   flutter_cube: ^0.1.1
+  path_provider: ^2.0.12
+  model_viewer: ^0.8.1
+  flutter_android: ^0.8.0
+
 
 
 
