@@ -9,6 +9,7 @@ import '../rendering/ViewerRendering.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:floorplan2vr/home.dart';
 
 class ImageInput extends StatefulWidget {
   @override
@@ -209,6 +210,21 @@ class _ImageInputState extends State<ImageInput> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ImageInput()),
+                              );
+                            },
+                            child: Icon(Icons.replay),
+                            style: ElevatedButton.styleFrom(
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(24),
+                            ),
+                          )
                         ])
                 ])
               : Column(children: [

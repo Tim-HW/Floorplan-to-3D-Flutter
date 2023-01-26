@@ -28,6 +28,7 @@ class _RenderingState extends State<RenderingVeiwer> {
       home: Scaffold(
         appBar: AppBar(title: Text("3D Floorplan Viewer")),
         body: ModelViewer(
+          backgroundColor: Color.fromARGB(255, 16, 7, 7),
           src: 'https://shoothouse.cylab.be/floorplan.glb',
           alt: "A 3D model of an astronaut",
           ar: true,
