@@ -1,15 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../rendering/CubeRendering.dart';
-import '../rendering/ViewerRendering.dart';
-import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:floorplan2vr/home.dart';
+
+import '../rendering/CubeRendering.dart';
+import '../rendering/ViewerRendering.dart';
 
 class ImageInput extends StatefulWidget {
   @override
@@ -22,8 +23,12 @@ class _ImageInputState extends State<ImageInput> {
   File? selectedImage;
   String? imagePath;
   String? message = "";
+  bool _isLoading = false;
 
   send() async {
+    setState(() {
+      _isLoading = true;
+    }); //show loader
     // Init the Type of request
     final request = http.MultipartRequest(
         "POST", Uri.parse("https://shoothouse.cylab.be/"));
@@ -45,16 +50,6 @@ class _ImageInputState extends State<ImageInput> {
     message = resJson['message'];
     // Update the state
     setState(() {});
-  }
-
-  void _getFromGallery() async {
-    final XFile? image =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      imagePath = image.path;
-      setState(() {});
-    } else {}
   }
 
   Future _getFromGallery2() async {
@@ -147,82 +142,56 @@ class _ImageInputState extends State<ImageInput> {
                     height: 50,
                   ),
                   (message == "")
-                      ? SizedBox(
-                          width: 100,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              send();
-                            },
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.red)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.upgrade),
-                                  Text('Run')
-                                ],
+                      ? (_isLoading == false)
+                          ? SizedBox(
+                              width: 100,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  send();
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.red)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.upgrade),
+                                      Text('Run')
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        )
+                            )
+                          : SizedBox(
+                              width: 100, child: CircularProgressIndicator())
                       : Column(children: [
                           SizedBox(
                             width: 230,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.grey)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Row(
-                                  children: const [
-                                    Text('Image uploaded successfully')
-                                  ],
+                            child: SizedBox(
+                              width: 230,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RenderingVeiwer()),
+                                  );
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.red)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.download),
+                                      Text('       Open 3D viewer')
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 230,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RenderingVeiwer()),
-                                );
-                              },
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.red)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Row(
-                                  children: const [
-                                    Icon(Icons.download),
-                                    Text('       Open 3D viewer')
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ImageInput()),
-                              );
-                            },
-                            child: Icon(Icons.replay),
-                            style: ElevatedButton.styleFrom(
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(24),
                             ),
                           )
                         ])
