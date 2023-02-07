@@ -125,8 +125,11 @@ class _ImageInputState extends State<ImageInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        image: DecorationImage(image: AssetImage("assets/back.png"), fit: BoxFit.contain),
+      ),
+      child:Center(
           child: (selectedImage != null)
               ? Column(children: [
                   SizedBox(
@@ -138,9 +141,7 @@ class _ImageInputState extends State<ImageInput> {
                     height: 300,
                     width: 300,
                   ),
-                  SizedBox(
-                    height: 50,
-                  ),
+
                   (message == "")
                       ? (_isLoading == false)
                           ? SizedBox(
@@ -206,15 +207,30 @@ class _ImageInputState extends State<ImageInput> {
                     color: Colors.grey,
                     child: Center(child: Text("No image selected")),
                   ),
+                  SizedBox(
+                    height: 20),
+                  SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        send();
+                      },
+                      style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStateProperty.all(Colors.red)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.upload_file),
+                            Text(' Upload')
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                 ])),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        //Floating action button on Scaffold
-        onPressed: () {
-          _OpenImagePicker(context);
-        },
-        child: Icon(Icons.camera_alt), //icon inside button
-      ),
+
     );
   }
 }

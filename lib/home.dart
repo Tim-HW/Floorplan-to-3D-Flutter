@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Floorplans 2 VR")),
+        title: Center(child: Text("Floorplans 2 Mesh")),
       ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
