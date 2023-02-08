@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:floorplan2vr/home.dart';
-
+import './email.dart';
 import '../rendering/CubeRendering.dart';
 import '../rendering/ViewerRendering.dart';
 
@@ -127,9 +127,10 @@ class _ImageInputState extends State<ImageInput> {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage("assets/back.png"), fit: BoxFit.contain),
+        image: DecorationImage(
+            image: AssetImage("assets/back.png"), fit: BoxFit.contain),
       ),
-      child:Center(
+      child: Center(
           child: (selectedImage != null)
               ? Column(children: [
                   SizedBox(
@@ -141,7 +142,6 @@ class _ImageInputState extends State<ImageInput> {
                     height: 300,
                     width: 300,
                   ),
-
                   (message == "")
                       ? (_isLoading == false)
                           ? SizedBox(
@@ -154,7 +154,7 @@ class _ImageInputState extends State<ImageInput> {
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.red)),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(10),
                                   child: Row(
                                     children: const [
                                       Icon(Icons.upgrade),
@@ -164,8 +164,14 @@ class _ImageInputState extends State<ImageInput> {
                                 ),
                               ),
                             )
-                          : SizedBox(
-                              width: 100, child: CircularProgressIndicator())
+                          : Column(children: [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              SizedBox(
+                                  width: 100,
+                                  child: CircularProgressIndicator())
+                            ])
                       : Column(children: [
                           SizedBox(
                             width: 230,
@@ -187,8 +193,35 @@ class _ImageInputState extends State<ImageInput> {
                                   padding: const EdgeInsets.all(4),
                                   child: Row(
                                     children: const [
-                                      Icon(Icons.download),
+                                      Icon(Icons.remove_red_eye),
                                       Text('       Open 3D viewer')
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 230,
+                            child: SizedBox(
+                              width: 230,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EmailForm()),
+                                  );
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.red)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.download),
+                                      Text('    Download')
                                     ],
                                   ),
                                 ),
@@ -207,17 +240,16 @@ class _ImageInputState extends State<ImageInput> {
                     color: Colors.grey,
                     child: Center(child: Text("No image selected")),
                   ),
-                  SizedBox(
-                    height: 20),
+                  SizedBox(height: 20),
                   SizedBox(
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        send();
+                        _OpenImagePicker(context);
                       },
                       style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.red)),
+                              MaterialStateProperty.all(Colors.red)),
                       child: Padding(
                         padding: const EdgeInsets.all(4),
                         child: Row(
@@ -230,7 +262,6 @@ class _ImageInputState extends State<ImageInput> {
                     ),
                   )
                 ])),
-
     );
   }
 }

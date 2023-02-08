@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './home.dart';
+import './picture/email.dart';
 import 'information.dart';
 import 'rendering/CubeRendering.dart';
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primarySwatch: Colors.red,
       ),
-      home: Home(),
+      home: EmailForm(),
     );
   }
 }
