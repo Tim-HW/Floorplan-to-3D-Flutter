@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'picture/image.dart';
 import './informations/RMA-info.dart';
 import './informations/XR-LAB-info.dart';
+import './informations/IRSD.dart';
 
 class information extends StatelessWidget {
   @override
@@ -17,7 +18,7 @@ class information extends StatelessWidget {
         children: <Widget>[
           Center(
             child: (Column(
-              children: [XRInfo(), RMAInfo()],
+              children: [XRInfo(), RMAInfo(), IRSD()],
             )),
           ),
         ],

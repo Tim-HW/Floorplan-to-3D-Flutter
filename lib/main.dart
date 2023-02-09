@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primarySwatch: Colors.red,
       ),
-      home: EmailForm(),
+      home: Home(),
     );
   }
 }

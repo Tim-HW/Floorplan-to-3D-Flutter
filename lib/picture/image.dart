@@ -144,15 +144,19 @@ class _ImageInputState extends State<ImageInput> {
                   ),
                   (message == "")
                       ? (_isLoading == false)
-                          ? SizedBox(
-                              width: 100,
+                          ?
+                          Column(children: [
+                            SizedBox(
+                              height: 50),
+                            SizedBox(
+                              width: 120,
                               child: ElevatedButton(
                                 onPressed: () {
                                   send();
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
+                                    MaterialStateProperty.all(Colors.red)),
                                 child: Padding(
                                   padding: const EdgeInsets.all(10),
                                   child: Row(
@@ -163,16 +167,18 @@ class _ImageInputState extends State<ImageInput> {
                                   ),
                                 ),
                               ),
-                            )
+                            )],)
+
                           : Column(children: [
                               SizedBox(
-                                height: 30,
+                                height: 50,
                               ),
                               SizedBox(
                                   width: 100,
                                   child: CircularProgressIndicator())
                             ])
                       : Column(children: [
+                          SizedBox(height: 10,),
                           SizedBox(
                             width: 230,
                             child: SizedBox(
@@ -240,7 +246,7 @@ class _ImageInputState extends State<ImageInput> {
                     color: Colors.grey,
                     child: Center(child: Text("No image selected")),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 50),
                   SizedBox(
                     width: 120,
                     child: ElevatedButton(
