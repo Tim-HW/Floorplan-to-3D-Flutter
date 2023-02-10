@@ -11,7 +11,10 @@ import '../home.dart';
 
 // Create a Form widget.
 class EmailForm extends StatefulWidget {
-  const EmailForm({super.key});
+
+  final String title;
+  const EmailForm(this.title);
+
 
   @override
   EmailFormState createState() {
@@ -27,7 +30,7 @@ class EmailFormState extends State<EmailForm> {
 
 
 
-  Future <http.Response> createEmail(String email, String format) {
+  Future <http.Response> createEmail(String email, String format, String ID) {
     return http.post(
       Uri.parse('https://shoothouse.cylab.be/email'),
       headers: <String, String>{
@@ -36,6 +39,7 @@ class EmailFormState extends State<EmailForm> {
       body: jsonEncode(<String, String>{
         'email': email,
         'format': format,
+        'ID': ID,
       }),
     );
   }
@@ -128,7 +132,7 @@ class EmailFormState extends State<EmailForm> {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate() && EmailValidator.validate(myController.text))  {
                       print("sending");
-                      createEmail(myController.text,dropdownvalue);
+                      createEmail(myController.text,dropdownvalue,widget.title);
                     }
                     else{
                       showDialog(

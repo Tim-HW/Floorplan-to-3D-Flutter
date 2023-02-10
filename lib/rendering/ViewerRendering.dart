@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:model_viewer/model_viewer.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class RenderingVeiwer extends StatefulWidget {
-  const RenderingVeiwer({super.key});
 
   @override
   State<RenderingVeiwer> createState() => _RenderingState();
 }
 
 class _RenderingState extends State<RenderingVeiwer> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,8 +34,8 @@ class _RenderingState extends State<RenderingVeiwer> {
         appBar: AppBar(title: Text("3D Floorplan Viewer")),
         body: ModelViewer(
           backgroundColor: Color.fromARGB(255, 0, 0, 0),
-          src: 'https://shoothouse.cylab.be/floorplan.glb',
-          alt: "A 3D model of an astronaut",
+          src: 'https://shoothouse.cylab.be/floorplan',
+          alt: 'yesyes',
           ar: true,
           autoRotate: true,
           cameraControls: true,

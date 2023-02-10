@@ -22,9 +22,21 @@ class ImageInput extends StatefulWidget {
 class _ImageInputState extends State<ImageInput> {
   File? selectedImage;
   String? imagePath;
-  String? message = "";
+  String message = "";
   bool _isLoading = false;
 
+
+  Future<http.Response> SendID(String title) {
+    return http.post(
+      Uri.parse("https://shoothouse.cylab.be/floorplan"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'title': title,
+      }),
+    );
+  }
   send() async {
     setState(() {
       _isLoading = true;
@@ -47,7 +59,7 @@ class _ImageInputState extends State<ImageInput> {
     // Decode the answer
     final resJson = jsonDecode(res.body);
     // Get the message in the json
-    message = resJson['message'];
+    message = resJson['ID'];
     // Update the state
     setState(() {});
   }
@@ -185,12 +197,16 @@ class _ImageInputState extends State<ImageInput> {
                               width: 230,
                               child: ElevatedButton(
                                 onPressed: () {
+                                  SendID(message);
+
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RenderingVeiwer()),
+                                  builder: (context) =>
+                                            RenderingVeiwer()),
+
                                   );
+
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:
@@ -213,10 +229,11 @@ class _ImageInputState extends State<ImageInput> {
                               width: 230,
                               child: ElevatedButton(
                                 onPressed: () {
+
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => EmailForm()),
+                                        builder: (context) => EmailForm(message)),
                                   );
                                 },
                                 style: ButtonStyle(
