@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:file_picker/file_picker.dart';
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +26,6 @@ class _ImageInputState extends State<ImageInput> {
   String message = "";
   bool _isLoading = false;
 
-
   Future<http.Response> SendID(String title) {
     return http.post(
       Uri.parse("https://shoothouse.cylab.be/floorplan"),
@@ -37,6 +37,7 @@ class _ImageInputState extends State<ImageInput> {
       }),
     );
   }
+
   send() async {
     setState(() {
       _isLoading = true;
@@ -64,7 +65,25 @@ class _ImageInputState extends State<ImageInput> {
     setState(() {});
   }
 
-  Future _getFromGallery2() async {
+  void _getFromGallery_windows() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      dialogTitle: 'Select an image',
+      type: FileType.image,
+    );
+
+    if (result == null) return;
+
+    PlatformFile file = result.files.single;
+
+    if (file.path != null) {
+      imagePath = file.path;
+      selectedImage = File(file.path as String);
+      setState(() {});
+    }
+  }
+
+  Future _getFromGallery_android() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (image != null) {
@@ -74,17 +93,7 @@ class _ImageInputState extends State<ImageInput> {
     } else {}
   }
 
-  Future _getFromCamera() async {
-    final XFile? image =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-
-    if (image != null) {
-      imagePath = image.path;
-      setState(() {});
-    }
-  }
-
-  Future _getFromCamera2() async {
+  Future _getFromCamera_android() async {
     final XFile? image =
         await ImagePicker().pickImage(source: ImageSource.camera);
 
@@ -99,39 +108,64 @@ class _ImageInputState extends State<ImageInput> {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            height: 200.0,
-            padding: EdgeInsets.all(10.0),
-            child: Column(children: [
-              Text('Pick an Image'),
-              SizedBox(
-                height: 10.0,
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  _getFromCamera2();
-                },
-                icon: Icon(
-                  // <-- Icon
-                  Icons.camera_alt,
-                  size: 24.0,
-                ),
-                label: Text('From Camera'), // <-- Text
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  _getFromGallery2();
-                },
-                icon: Icon(
-                  // <-- Icon
-                  Icons.folder_open,
-                  size: 24.0,
-                ),
-                label: Text('From Gallery'), // <-- Text
-              ),
-              SizedBox(height: 50.0),
-            ]),
-          );
+          return (Platform.isAndroid == true)
+              ? Container(
+                  height: 200.0,
+                  padding: EdgeInsets.all(10.0),
+                  child: Column(children: [
+                    Text('Pick an Image'),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        _getFromCamera_android();
+                      },
+                      icon: Icon(
+                        // <-- Icon
+                        Icons.camera_alt,
+                        size: 24.0,
+                      ),
+                      label: Text('From Camera'), // <-- Text
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        _getFromGallery_android();
+                      },
+                      icon: Icon(
+                        // <-- Icon
+                        Icons.folder_open,
+                        size: 24.0,
+                      ),
+                      label: Text('From Gallery'), // <-- Text
+                    ),
+                    SizedBox(height: 50.0),
+                  ]),
+                )
+              : (Platform.isWindows == true || Platform.isLinux == true)
+                  ? Container(
+                      height: 200.0,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(children: [
+                        Text('Pick an Image'),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            _getFromGallery_windows();
+                          },
+                          icon: Icon(
+                            // <-- Icon
+                            Icons.folder_open,
+                            size: 24.0,
+                          ),
+                          label: Text('From Gallery'), // <-- Text
+                        ),
+                        SizedBox(height: 50.0),
+                      ]),
+                    )
+                  : Text("Device not supported");
         });
   }
 
@@ -156,31 +190,32 @@ class _ImageInputState extends State<ImageInput> {
                   ),
                   (message == "")
                       ? (_isLoading == false)
-                          ?
-                          Column(children: [
-                            SizedBox(
-                              height: 50),
-                            SizedBox(
-                              width: 120,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  send();
-                                },
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                    MaterialStateProperty.all(Colors.red)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.upgrade),
-                                      Text('Run')
-                                    ],
+                          ? Column(
+                              children: [
+                                SizedBox(height: 50),
+                                SizedBox(
+                                  width: 120,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      send();
+                                    },
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.red)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.upgrade),
+                                          Text('Run')
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            )],)
-
+                                )
+                              ],
+                            )
                           : Column(children: [
                               SizedBox(
                                 height: 50,
@@ -190,7 +225,9 @@ class _ImageInputState extends State<ImageInput> {
                                   child: CircularProgressIndicator())
                             ])
                       : Column(children: [
-                          SizedBox(height: 10,),
+                          SizedBox(
+                            height: 10,
+                          ),
                           SizedBox(
                             width: 230,
                             child: SizedBox(
@@ -202,11 +239,9 @@ class _ImageInputState extends State<ImageInput> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                  builder: (context) =>
+                                        builder: (context) =>
                                             RenderingVeiwer()),
-
                                   );
-
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:
@@ -229,11 +264,11 @@ class _ImageInputState extends State<ImageInput> {
                               width: 230,
                               child: ElevatedButton(
                                 onPressed: () {
-
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => EmailForm(message)),
+                                        builder: (context) =>
+                                            EmailForm(message)),
                                   );
                                 },
                                 style: ButtonStyle(

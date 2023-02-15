@@ -49,6 +49,7 @@ dependencies:
   loading_indicator: ^3.1.0
   email_validator: ^2.1.17
   drop_down_list: ^0.0.4
+  file_picker: ^5.2.5
 
 
 
