@@ -224,69 +224,82 @@ class _ImageInputState extends State<ImageInput> {
                                   width: 100,
                                   child: CircularProgressIndicator())
                             ])
-                      : Column(children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            width: 230,
-                            child: SizedBox(
-                              width: 230,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  SendID(message);
+                      : (message == 'ERROR')
+                          ? Column(
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                SizedBox(
+                                  child: Text('ERROR cannot transform in 3D'),
+                                )
+                              ],
+                            )
+                          : Column(children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                width: 230,
+                                child: SizedBox(
+                                  width: 230,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      SendID(message);
 
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            RenderingVeiwer()),
-                                  );
-                                },
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.remove_red_eye),
-                                      Text('       Open 3D viewer')
-                                    ],
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RenderingVeiwer()),
+                                      );
+                                    },
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.red)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.remove_red_eye),
+                                          Text('       Open 3D viewer')
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 230,
-                            child: SizedBox(
-                              width: 230,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            EmailForm(message)),
-                                  );
-                                },
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.download),
-                                      Text('    Download')
-                                    ],
+                              SizedBox(
+                                width: 230,
+                                child: SizedBox(
+                                  width: 230,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EmailForm(message)),
+                                      );
+                                    },
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.red)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.download),
+                                          Text('    Download')
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          )
-                        ])
+                              )
+                            ])
                 ])
               : Column(children: [
                   SizedBox(
