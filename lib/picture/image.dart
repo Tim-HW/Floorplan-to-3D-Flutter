@@ -10,7 +10,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:floorplan2vr/home.dart';
 import './email.dart';
-import '../rendering/CubeRendering.dart';
 import '../rendering/ViewerRendering.dart';
 
 class ImageInput extends StatefulWidget {
@@ -28,7 +27,7 @@ class _ImageInputState extends State<ImageInput> {
 
   Future<http.Response> SendID(String title) {
     return http.post(
-      Uri.parse("https://shoothouse.cylab.be/floorplan"),
+      Uri.parse("https://shoothouse.cylab.be/viewer"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -44,7 +43,7 @@ class _ImageInputState extends State<ImageInput> {
     }); //show loader
     // Init the Type of request
     final request = http.MultipartRequest(
-        "POST", Uri.parse("https://shoothouse.cylab.be/"));
+        "POST", Uri.parse("https://shoothouse.cylab.be/upload"));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request

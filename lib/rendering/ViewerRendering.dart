@@ -6,15 +6,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RenderingVeiwer extends StatefulWidget {
-
   @override
   State<RenderingVeiwer> createState() => _RenderingState();
 }
 
 class _RenderingState extends State<RenderingVeiwer> {
-
-
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,7 +30,7 @@ class _RenderingState extends State<RenderingVeiwer> {
         appBar: AppBar(title: Text("3D Floorplan Viewer")),
         body: ModelViewer(
           backgroundColor: Color.fromARGB(255, 0, 0, 0),
-          src: 'https://shoothouse.cylab.be/floorplan',
+          src: 'https://shoothouse.cylab.be/viewer',
           alt: 'yesyes',
           ar: true,
           autoRotate: true,
