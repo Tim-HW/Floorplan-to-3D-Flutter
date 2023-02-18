@@ -37,6 +37,9 @@ class _ImageInputState extends State<ImageInput> {
     );
   }
 
+  //-------------------------------------------------
+  //   function to send the image to server
+  //-------------------------------------------------
   send() async {
     setState(() {
       _isLoading = true;
@@ -64,6 +67,9 @@ class _ImageInputState extends State<ImageInput> {
     setState(() {});
   }
 
+  //-------------------------------------------------
+  //   Open file picker from windows + Linux
+  //-------------------------------------------------
   void _getFromGallery_windows() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -82,6 +88,10 @@ class _ImageInputState extends State<ImageInput> {
     }
   }
 
+  //-------------------------------------------------
+  //   function to get image from phone storage - Android only
+  //-------------------------------------------------
+
   Future _getFromGallery_android() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -91,6 +101,10 @@ class _ImageInputState extends State<ImageInput> {
       setState(() {});
     } else {}
   }
+
+  //-------------------------------------------------
+  //   function get image from camera - Android only
+  //-------------------------------------------------
 
   Future _getFromCamera_android() async {
     final XFile? image =
@@ -102,6 +116,10 @@ class _ImageInputState extends State<ImageInput> {
       setState(() {});
     }
   }
+
+  //-------------------------------------------------
+  //   Main function to get images from device
+  //-------------------------------------------------
 
   void _OpenImagePicker(BuildContext context) {
     showModalBottomSheet(
@@ -187,8 +205,14 @@ class _ImageInputState extends State<ImageInput> {
                     height: 300,
                     width: 300,
                   ),
+                  //-------------------------------------------------
+                  //         If the image is not uploaded
+                  //-------------------------------------------------
                   (message == "")
                       ? (_isLoading == false)
+                          //-------------------------------------------------
+                          //       If The image is selected but not send
+                          //-------------------------------------------------
                           ? Column(
                               children: [
                                 SizedBox(height: 50),
@@ -215,6 +239,9 @@ class _ImageInputState extends State<ImageInput> {
                                 )
                               ],
                             )
+                          //-------------------------------------------------
+                          //         If the image selected and uploaded
+                          //-------------------------------------------------
                           : Column(children: [
                               SizedBox(
                                 height: 50,
@@ -223,6 +250,10 @@ class _ImageInputState extends State<ImageInput> {
                                   width: 100,
                                   child: CircularProgressIndicator())
                             ])
+
+                      //-------------------------------------------------
+                      //         If the image uploaded failed
+                      //-------------------------------------------------
                       : (message == 'ERROR')
                           ? Column(
                               children: [
@@ -234,6 +265,10 @@ class _ImageInputState extends State<ImageInput> {
                                 )
                               ],
                             )
+
+                          //-------------------------------------------------
+                          //   If the image uploaded Successfuly transformed
+                          //-------------------------------------------------
                           : Column(children: [
                               SizedBox(
                                 height: 10,
@@ -300,7 +335,12 @@ class _ImageInputState extends State<ImageInput> {
                               )
                             ])
                 ])
-              : Column(children: [
+              :
+              //-------------------------------------------------
+              //   If the image is not selected yet
+              //-------------------------------------------------
+
+              Column(children: [
                   SizedBox(
                     height: 20,
                   ),
