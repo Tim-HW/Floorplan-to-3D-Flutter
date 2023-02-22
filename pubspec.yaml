@@ -50,6 +50,7 @@ dependencies:
   email_validator: ^2.1.17
   drop_down_list: ^0.0.4
   file_picker: ^5.2.5
+  document_scanner_flutter: ^0.2.7
 
 
 

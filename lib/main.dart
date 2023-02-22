@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import './home.dart';
-import './picture/email.dart';
-import 'information.dart';
 
 void main() {
   runApp(const MyApp());

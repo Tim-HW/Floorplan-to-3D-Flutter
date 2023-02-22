@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:floorplan2vr/home.dart';
 import './email.dart';
 import '../rendering/ViewerRendering.dart';
+import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 
 class ImageInput extends StatefulWidget {
   @override
@@ -24,6 +26,19 @@ class _ImageInputState extends State<ImageInput> {
   String? imagePath;
   String message = "";
   bool _isLoading = false;
+
+
+  void _StartScan(BuildContext context) async {
+    var image = await DocumentScannerFlutter.launch(context);
+    if (image != null){
+      setState(() {
+        selectedImage = image;
+        selectedImage = File(image.path);
+        imagePath = image.path;
+        setState(() {});
+      });
+    }
+  }
 
   Future<http.Response> SendID(String title) {
     return http.post(
@@ -70,6 +85,7 @@ class _ImageInputState extends State<ImageInput> {
   //-------------------------------------------------
   //   Open file picker from windows + Linux
   //-------------------------------------------------
+  /*
   void _getFromGallery_windows() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -87,9 +103,9 @@ class _ImageInputState extends State<ImageInput> {
       setState(() {});
     }
   }
-
+  */
   //-------------------------------------------------
-  //   function to downoad model from server
+  //   function to download model from server
   //-------------------------------------------------
 
   Future<File> downloadFile(String url, String fileName) async {
@@ -115,7 +131,7 @@ class _ImageInputState extends State<ImageInput> {
   //-------------------------------------------------
   //   function to get image from phone storage - Android only
   //-------------------------------------------------
-
+  /*
   Future _getFromGallery_android() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -125,11 +141,12 @@ class _ImageInputState extends State<ImageInput> {
       setState(() {});
     } else {}
   }
-
+  */
   //-------------------------------------------------
   //   function get image from camera - Android only
   //-------------------------------------------------
 
+  /*
   Future _getFromCamera_android() async {
     final XFile? image =
         await ImagePicker().pickImage(source: ImageSource.camera);
@@ -140,11 +157,11 @@ class _ImageInputState extends State<ImageInput> {
       setState(() {});
     }
   }
-
+  */
   //-------------------------------------------------
   //   Main function to get images from device
   //-------------------------------------------------
-
+  /*
   void _OpenImagePicker(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -209,7 +226,7 @@ class _ImageInputState extends State<ImageInput> {
                   : Text("Device not supported");
         });
   }
-
+  */
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -405,7 +422,7 @@ class _ImageInputState extends State<ImageInput> {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        _OpenImagePicker(context);
+                        _StartScan(context);
                       },
                       style: ButtonStyle(
                           backgroundColor:
