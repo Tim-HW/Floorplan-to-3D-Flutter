@@ -320,13 +320,11 @@ class _ImageInputState extends State<ImageInput> {
                                   width: 230,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      SendID(message);
-
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                RenderingVeiwer()),
+                                                RenderingVeiwer(message)),
                                       );
                                     },
                                     style: ButtonStyle(
