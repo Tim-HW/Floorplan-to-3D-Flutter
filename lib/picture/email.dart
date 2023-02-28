@@ -3,18 +3,40 @@ import 'package:email_validator/email_validator.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:drop_down_list/drop_down_list.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import '../home.dart';
 
 // Create a Form widget.
 class EmailForm extends StatefulWidget {
-  final String title;
-  const EmailForm(this.title);
+  final String ID;
+  const EmailForm(this.ID);
 
   @override
   EmailFormState createState() {
     return EmailFormState();
   }
 }
+
+
+
+  // Create a global key that uniquely identifies the Form widget
+  // and allows validation of the form.
+  //
+  // Note: This is a GlobalKey<FormState>,
+  // not a GlobalKey<EmailFormState>.
+  final _formKey = GlobalKey<FormState>();
+  final myController = TextEditingController();
+  // Initial Selected Value
+  String dropdownvalue = '.obj';
+  double? _progress;
+
+  // List of items in our dropdown menu
+  var items = [
+    '.obj',
+    '.fbx',
+    '.stl',
+    '.gltf',
+  ];
 
 // Create a corresponding State class.
 // This class holds data related to the form.
@@ -33,23 +55,24 @@ class EmailFormState extends State<EmailForm> {
     );
   }
 
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<EmailFormState>.
-  final _formKey = GlobalKey<FormState>();
-  final myController = TextEditingController();
-  // Initial Selected Value
-  String dropdownvalue = '.obj';
 
-  // List of items in our dropdown menu
-  var items = [
-    '.obj',
-    '.fbx',
-    '.stl',
-    '.gltf',
-  ];
+  void Downloader(String ID, String format){
+
+    FileDownloader.downloadFile
+      (
+        url: 'https://shoothouse.cylab.be/downloader?ID='+ID+'&ext='+format,
+        onProgress: (name,progress){
+          setState(() {
+            _progress = progress;
+          });
+        });
+    onDownloadComplet: (value){
+      print('path $value');
+      setState(() {
+        _progress = null;
+      });
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +84,7 @@ class EmailFormState extends State<EmailForm> {
         ),
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Send by email'),
+              title: const Text('Download the mesh'),
             ),
             body: Form(
               key: _formKey,
@@ -69,6 +92,56 @@ class EmailFormState extends State<EmailForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 10),
+                Text("Choose your format",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        height: 1,
+                        fontSize: 20)),
+                SizedBox(height: 10),
+                DropdownButton(
+                  // Initial Value
+                  value: dropdownvalue,
+
+                  // Down Arrow Icon
+                  icon: const Icon(Icons.keyboard_arrow_down),
+
+                  // Array list of items
+                  items: items.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  // After selecting the desired option,it will
+                  // change button value to selected value
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropdownvalue = newValue!;
+                    });
+                  },
+                ),
+                  SizedBox(
+                    width: 200,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Downloader(widget.ID,dropdownvalue);
+                      },
+                      style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStateProperty.all(
+                              Colors.red)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.download),
+                            Text(' Direct Download')
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 50),
                   Text("Email to send the file",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -90,46 +163,18 @@ class EmailFormState extends State<EmailForm> {
                     },
                   ),
                   SizedBox(height: 20),
-                  Text("Choose your format",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          height: 1,
-                          fontSize: 20)),
-                  SizedBox(height: 10),
-                  DropdownButton(
-                    // Initial Value
-                    value: dropdownvalue,
 
-                    // Down Arrow Icon
-                    icon: const Icon(Icons.keyboard_arrow_down),
-
-                    // Array list of items
-                    items: items.map((String items) {
-                      return DropdownMenuItem(
-                        value: items,
-                        child: Text(items),
-                      );
-                    }).toList(),
-                    // After selecting the desired option,it will
-                    // change button value to selected value
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownvalue = newValue!;
-                      });
-                    },
-                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(150, 70)),
+                          fixedSize: const Size(170, 50)),
                       onPressed: () {
                         // Validate returns true if the form is valid, or false otherwise.
                         if (_formKey.currentState!.validate() &&
                             EmailValidator.validate(myController.text)) {
-                          print("sending");
                           createEmail(
-                              myController.text, dropdownvalue, widget.title);
+                              myController.text, dropdownvalue, widget.ID);
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => Home()),
@@ -147,13 +192,15 @@ class EmailFormState extends State<EmailForm> {
                           );
                         }
                       },
-                      child: const Text('Submit',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              height: 1,
-                              fontSize: 20)),
-                    ),
-                  ),
+                      child: Row(
+                        children: const [
+                          Icon(Icons.email_outlined),
+                          Text('   Send via email')
+                        ],)
+
+
+                  ),)
+
                 ],
               ),
             )));

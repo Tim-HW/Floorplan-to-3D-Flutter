@@ -26,6 +26,10 @@ class _ImageInputState extends State<ImageInput> {
   String? imagePath;
   String message = "";
   bool _isLoading = false;
+  double? _progress;
+
+
+
 
 
   void _StartScan(BuildContext context) async {
@@ -44,7 +48,7 @@ class _ImageInputState extends State<ImageInput> {
   //-------------------------------------------------
   //   function to send the image to server
   //-------------------------------------------------
-  send() async {
+  _upload() async {
     setState(() {
       _isLoading = true;
     }); //show loader
@@ -97,25 +101,7 @@ class _ImageInputState extends State<ImageInput> {
   //   function to download model from server
   //-------------------------------------------------
 
-  Future<File> downloadFile(String url, String fileName) async {
-    var request = http.Request('GET', Uri.parse(url));
-    var response = await http.Client().send(request);
 
-    // Create a file to write the data to.
-    var file = File(fileName);
-
-    // Open the file for writing.
-    var fileStream = file.openWrite();
-
-    // Pipe the response stream to the file stream.
-    await response.stream.pipe(fileStream);
-
-    // Close the streams.
-    await fileStream.flush();
-    await fileStream.close();
-
-    return file;
-  }
 
   //-------------------------------------------------
   //   function to get image from phone storage - Android only
@@ -250,7 +236,7 @@ class _ImageInputState extends State<ImageInput> {
                                   width: 120,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      send();
+                                      _upload();
                                     },
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -337,10 +323,13 @@ class _ImageInputState extends State<ImageInput> {
                                 child: SizedBox(
                                   width: 230,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      var file = downloadFile(
-                                          'https://example.com/file.pdf?str=$message',
-                                          '$message');
+                                    onPressed: ()  {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EmailForm(message)),
+                                      );
                                     },
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -358,35 +347,7 @@ class _ImageInputState extends State<ImageInput> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                width: 230,
-                                child: SizedBox(
-                                  width: 230,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                EmailForm(message)),
-                                      );
-                                    },
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.red)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4),
-                                      child: Row(
-                                        children: const [
-                                          Icon(Icons.email_outlined),
-                                          Text('    Send by Email')
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
+
                             ])
                 ])
               :
