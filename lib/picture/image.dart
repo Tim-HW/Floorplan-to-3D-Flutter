@@ -40,17 +40,6 @@ class _ImageInputState extends State<ImageInput> {
     }
   }
 
-  Future<http.Response> SendID(String title) {
-    return http.post(
-      Uri.parse("https://shoothouse.cylab.be/viewer"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'title': title,
-      }),
-    );
-  }
 
   //-------------------------------------------------
   //   function to send the image to server
