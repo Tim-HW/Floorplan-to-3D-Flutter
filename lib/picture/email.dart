@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:drop_down_list/drop_down_list.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import '../home.dart';
 

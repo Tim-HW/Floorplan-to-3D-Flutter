@@ -1,18 +1,14 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io'as io;
 import 'package:document_scanner_flutter/document_scanner_flutter.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart';
-import 'package:floorplan2vr/home.dart';
 import './email.dart';
 import '../rendering/ViewerRendering.dart';
-import 'package:document_scanner_flutter/document_scanner_flutter.dart';
+import 'package:file_picker/file_picker.dart';
+
+
 
 class ImageInput extends StatefulWidget {
   @override
@@ -22,7 +18,7 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
-  File? selectedImage;
+  io.File? selectedImage;
   String? imagePath;
   String message = "";
   bool _isLoading = false;
@@ -33,15 +29,16 @@ class _ImageInputState extends State<ImageInput> {
 
 
   void _StartScan(BuildContext context) async {
-    var image = await DocumentScannerFlutter.launch(context);
-    if (image != null){
-      setState(() {
-        selectedImage = image;
-        selectedImage = File(image.path);
-        imagePath = image.path;
-        setState(() {});
-      });
-    }
+
+      var image = await DocumentScannerFlutter.launch(context);
+      if (image != null){
+        setState(() {
+          //selectedImage = image;
+          selectedImage = io.File(image.path);
+          imagePath = image.path;
+          setState(() {});
+        });
+      }
   }
 
 
@@ -78,8 +75,8 @@ class _ImageInputState extends State<ImageInput> {
   //-------------------------------------------------
   //   Open file picker from windows + Linux
   //-------------------------------------------------
-  /*
-  void _getFromGallery_windows() async {
+
+  void _getFromGalleryWindowsLinux() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       dialogTitle: 'Select an image',
@@ -92,116 +89,13 @@ class _ImageInputState extends State<ImageInput> {
 
     if (file.path != null) {
       imagePath = file.path;
-      selectedImage = File(file.path as String);
+      selectedImage = io.File(file.path as String);
       setState(() {});
     }
   }
-  */
-  //-------------------------------------------------
-  //   function to download model from server
-  //-------------------------------------------------
 
 
 
-  //-------------------------------------------------
-  //   function to get image from phone storage - Android only
-  //-------------------------------------------------
-  /*
-  Future _getFromGallery_android() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      selectedImage = File(image.path);
-      imagePath = image.path;
-      setState(() {});
-    } else {}
-  }
-  */
-  //-------------------------------------------------
-  //   function get image from camera - Android only
-  //-------------------------------------------------
-
-  /*
-  Future _getFromCamera_android() async {
-    final XFile? image =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-
-    if (image != null) {
-      selectedImage = File(image.path);
-      imagePath = image.path;
-      setState(() {});
-    }
-  }
-  */
-  //-------------------------------------------------
-  //   Main function to get images from device
-  //-------------------------------------------------
-  /*
-  void _OpenImagePicker(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return (Platform.isAndroid == true)
-              ? Container(
-                  height: 200.0,
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(children: [
-                    Text('Pick an Image'),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        _getFromCamera_android();
-                      },
-                      icon: Icon(
-                        // <-- Icon
-                        Icons.camera_alt,
-                        size: 24.0,
-                      ),
-                      label: Text('From Camera'), // <-- Text
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        _getFromGallery_android();
-                      },
-                      icon: Icon(
-                        // <-- Icon
-                        Icons.folder_open,
-                        size: 24.0,
-                      ),
-                      label: Text('From Gallery'), // <-- Text
-                    ),
-                    SizedBox(height: 50.0),
-                  ]),
-                )
-              : (Platform.isWindows == true || Platform.isLinux == true)
-                  ? Container(
-                      height: 200.0,
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(children: [
-                        Text('Pick an Image'),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            _getFromGallery_windows();
-                          },
-                          icon: Icon(
-                            // <-- Icon
-                            Icons.folder_open,
-                            size: 24.0,
-                          ),
-                          label: Text('From Gallery'), // <-- Text
-                        ),
-                        SizedBox(height: 50.0),
-                      ]),
-                    )
-                  : Text("Device not supported");
-        });
-  }
-  */
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -216,7 +110,7 @@ class _ImageInputState extends State<ImageInput> {
                     height: 20,
                   ),
                   Image.file(
-                    File(imagePath!),
+                    io.File(imagePath!),
                     fit: BoxFit.cover,
                     height: 300,
                     width: 300,
@@ -295,12 +189,14 @@ class _ImageInputState extends State<ImageInput> {
                                   width: 230,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                RenderingVeiwer(message)),
-                                      );
+                                      if(io.Platform.isAndroid == true) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RenderingVeiwer(message)),
+                                        );
+                                      }
                                     },
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -370,7 +266,14 @@ class _ImageInputState extends State<ImageInput> {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        _StartScan(context);
+
+                        if(io.Platform.isWindows == true || io.Platform.isLinux == true)
+                        {
+                          _getFromGalleryWindowsLinux();
+                        }
+                        else if(io.Platform.isAndroid == true) {
+                          _StartScan(context);
+                        }
                       },
                       style: ButtonStyle(
                           backgroundColor:

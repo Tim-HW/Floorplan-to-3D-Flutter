@@ -52,6 +52,7 @@ dependencies:
   file_picker: ^5.2.5
   document_scanner_flutter: ^0.2.7
   flutter_file_downloader: ^1.1.0+1
+  device_info_plus: ^8.1.0
 
 
 
