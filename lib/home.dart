@@ -1,15 +1,21 @@
+import 'dart:io';
+
 import 'package:floorplan2vr/information.dart';
 import 'package:flutter/material.dart';
 import 'picture/image.dart';
+import 'draw.dart';
 
 class Home extends StatefulWidget {
   @override
+  
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
-  List _screens = [ImageInput(), information()];
+
+  
+  final List _screens = [ImageInput(), information(),DrawImage()];
 
   void _updateIndex(int value) {
     setState(() {
@@ -42,7 +48,10 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.info),
             label: "Informations",
           ),
-
+          BottomNavigationBarItem(
+            icon: Icon(Icons.draw_outlined),
+            label: "Draw",
+          ),
           //put more items here
         ],
       ),

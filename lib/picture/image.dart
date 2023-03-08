@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import './email.dart';
 import '../rendering/ViewerRendering.dart';
 import 'package:file_picker/file_picker.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 
 class ImageInput extends StatefulWidget {
@@ -22,10 +22,16 @@ class _ImageInputState extends State<ImageInput> {
   String? imagePath;
   String message = "";
   bool _isLoading = false;
-  double? _progress;
 
 
 
+
+
+  Future<void> _launchUrl(Uri _url) async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
 
 
   void _StartScan(BuildContext context) async {
@@ -179,24 +185,25 @@ class _ImageInputState extends State<ImageInput> {
                           //-------------------------------------------------
                           //   If the image uploaded Successfuly transformed
                           //-------------------------------------------------
-                          : Column(children: [
+                          :Column(children: [
                               SizedBox(
                                 height: 10,
                               ),
+
+                              (io.Platform.isAndroid == true)
+                              ?
                               SizedBox(
                                 width: 230,
                                 child: SizedBox(
                                   width: 230,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      if(io.Platform.isAndroid == true) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   RenderingVeiwer(message)),
-                                        );
-                                      }
+                                        );   
                                     },
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -213,19 +220,28 @@ class _ImageInputState extends State<ImageInput> {
                                     ),
                                   ),
                                 ),
-                              ),
+                              )
+                              :SizedBox(height:20),
                               SizedBox(
                                 width: 230,
                                 child: SizedBox(
                                   width: 230,
                                   child: ElevatedButton(
                                     onPressed: ()  {
+                                      if(io.Platform.isAndroid)
+                                      {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 EmailForm(message)),
                                       );
+                                      }
+                                      else if(io.Platform.isWindows || io.Platform.isLinux)
+                                      {
+                                          final Uri _url = Uri.parse('https://shoothouse.cylab.be/veiwer?ID='+message);
+                                          _launchUrl(_url);
+                                      }
                                     },
                                     style: ButtonStyle(
                                         backgroundColor:

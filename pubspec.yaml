@@ -53,6 +53,11 @@ dependencies:
   document_scanner_flutter: ^0.2.7
   flutter_file_downloader: ^1.1.0+1
   device_info_plus: ^8.1.0
+  html: ^0.15.2
+  image_painter: ^0.5.0
+  open_file: ^2.1.1
+  image: ^3.3.0
+  flutter_speed_dial: ^6.2.0
 
 
 
