@@ -70,6 +70,9 @@ class FacePainter extends CustomPainter {
 }
 
 class DrawImage extends StatefulWidget {
+  DrawImage(this.ImagePath);
+  String ImagePath;
+
   @override
   _DrawImageState createState() => _DrawImageState();
 }
@@ -131,7 +134,7 @@ class _DrawImageState extends State<DrawImage> {
   // Function to load the Background
   Future<void> _asyncInit() async {
     // Load the image
-    final image = await loadImage('assets/VR.png');
+    final image = await loadImage(widget.ImagePath);
     setState(() {
       // Update the variable
       _Background = image;
@@ -149,31 +152,19 @@ class _DrawImageState extends State<DrawImage> {
     // setState(() => imageStateVarible = image);
   }
 
-  // Function to get the position tapped
-  void _getTapPosition(TapDownDetails details) async {
-    // init variable
-    final tapPosition = details.globalPosition;
-    setState(() {
-      // Update variable
-      _PositionStart = Offset(tapPosition.dx, tapPosition.dy - 56);
-
-      print(_PositionStart);
-    });
-  }
-
   void _getStartPosition(DragStartDetails details) async {
-    final tapPosition = details.globalPosition;
+    final tapPosition = details.localPosition;
     setState(() {
-      _PositionStart = Offset(tapPosition.dx, tapPosition.dy - 56);
+      _PositionStart = Offset(tapPosition.dx, tapPosition.dy);
 
       print('Start : ' + _PositionStart.toString());
     });
   }
 
   void _getEndPosition(DragUpdateDetails details) async {
-    final tapPosition = details.globalPosition;
+    final tapPosition = details.localPosition;
     setState(() {
-      _PositionEnd = Offset(tapPosition.dx, tapPosition.dy - 56);
+      _PositionEnd = Offset(tapPosition.dx, tapPosition.dy);
 
       print('End : ' + tapPosition.toString());
     });

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io'as io;
+import 'dart:io' as io;
 import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,7 +8,7 @@ import './email.dart';
 import '../rendering/ViewerRendering.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import './../draw.dart';
 
 class ImageInput extends StatefulWidget {
   @override
@@ -23,30 +23,23 @@ class _ImageInputState extends State<ImageInput> {
   String message = "";
   bool _isLoading = false;
 
-
-
-
-
   Future<void> _launchUrl(Uri _url) async {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
     }
   }
 
-
   void _StartScan(BuildContext context) async {
-
-      var image = await DocumentScannerFlutter.launch(context);
-      if (image != null){
-        setState(() {
-          //selectedImage = image;
-          selectedImage = io.File(image.path);
-          imagePath = image.path;
-          setState(() {});
-        });
-      }
+    var image = await DocumentScannerFlutter.launch(context);
+    if (image != null) {
+      setState(() {
+        //selectedImage = image;
+        selectedImage = io.File(image.path);
+        imagePath = image.path;
+        setState(() {});
+      });
+    }
   }
-
 
   //-------------------------------------------------
   //   function to send the image to server
@@ -99,8 +92,6 @@ class _ImageInputState extends State<ImageInput> {
       setState(() {});
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -185,81 +176,105 @@ class _ImageInputState extends State<ImageInput> {
                           //-------------------------------------------------
                           //   If the image uploaded Successfuly transformed
                           //-------------------------------------------------
-                          :Column(children: [
+                          : Column(children: [
                               SizedBox(
                                 height: 10,
                               ),
-
                               (io.Platform.isAndroid == true)
-                              ?
-                              SizedBox(
-                                width: 230,
-                                child: SizedBox(
-                                  width: 230,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RenderingVeiwer(message)),
-                                        );   
-                                    },
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.red)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4),
-                                      child: Row(
-                                        children: const [
-                                          Icon(Icons.remove_red_eye),
-                                          Text('       Open 3D viewer')
-                                        ],
+                                  ? SizedBox(
+                                      width: 230,
+                                      child: SizedBox(
+                                        width: 230,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      RenderingVeiwer(message)),
+                                            );
+                                          },
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.red)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Row(
+                                              children: const [
+                                                Icon(Icons.remove_red_eye),
+                                                Text('       Open 3D viewer')
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                              :SizedBox(height:20),
-                              SizedBox(
-                                width: 230,
-                                child: SizedBox(
-                                  width: 230,
-                                  child: ElevatedButton(
-                                    onPressed: ()  {
-                                      if(io.Platform.isAndroid)
-                                      {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                EmailForm(message)),
-                                      );
-                                      }
-                                      else if(io.Platform.isWindows || io.Platform.isLinux)
-                                      {
-                                          final Uri _url = Uri.parse('https://shoothouse.cylab.be/veiwer?ID='+message);
-                                          _launchUrl(_url);
-                                      }
-                                    },
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.red)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4),
-                                      child: Row(
-                                        children: const [
-                                          Icon(Icons.download),
-                                          Text('    Download')
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-
+                                    )
+                                  : (io.Platform.isWindows ||
+                                          io.Platform.isLinux)
+                                      ? Column(
+                                          children: [
+                                            SizedBox(
+                                              width: 230,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  final Uri _url = Uri.parse(
+                                                      'https://shoothouse.cylab.be/veiwer?ID=' +
+                                                          message);
+                                                  _launchUrl(_url);
+                                                },
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.red)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(Icons.download),
+                                                      Text('    Download')
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            SizedBox(
+                                              width: 230,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DrawImage(
+                                                                imagePath!)),
+                                                  );
+                                                },
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.red)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(Icons.window),
+                                                      Text('    Add Objects')
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : SizedBox(
+                                          height: 20,
+                                        )
                             ])
                 ])
               :
@@ -282,12 +297,10 @@ class _ImageInputState extends State<ImageInput> {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-
-                        if(io.Platform.isWindows == true || io.Platform.isLinux == true)
-                        {
+                        if (io.Platform.isWindows == true ||
+                            io.Platform.isLinux == true) {
                           _getFromGalleryWindowsLinux();
-                        }
-                        else if(io.Platform.isAndroid == true) {
+                        } else if (io.Platform.isAndroid == true) {
                           _StartScan(context);
                         }
                       },

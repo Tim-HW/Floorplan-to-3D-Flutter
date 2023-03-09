@@ -7,15 +7,17 @@ import 'draw.dart';
 
 class Home extends StatefulWidget {
   @override
-  
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
 
-  
-  final List _screens = [ImageInput(), information(),DrawImage()];
+  final List _screens = [
+    ImageInput(),
+    information(),
+    DrawImage('assets/VR.png')
+  ];
 
   void _updateIndex(int value) {
     setState(() {
