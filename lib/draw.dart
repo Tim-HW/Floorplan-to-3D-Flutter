@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 import 'dart:io' as io;
 import 'dart:convert';
-import 'variable.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +10,6 @@ class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.ListDoors,
       this.ListWindow, this.IsADoor);
 
-  final recorder = new ui.PictureRecorder();
-  Canvas? canvas1;
   // To know if the door/windows is selected
   final bool IsADoor;
   // List of Doors
@@ -31,40 +28,33 @@ class FacePainter extends CustomPainter {
   // Color for Doors
   Color colorDoors = ui.Color.fromARGB(255, 0, 179, 95);
 
-  @override
-  void initState() {
-    canvas1 = new Canvas(recorder);
-  }
-
   // Main function to print on the canvas
 
-  void paint(Canvas canvas1, ui.Size size) {
+  void paint(Canvas canvas, ui.Size size) {
     // Upload image on the background
-    canvas1.drawImage(image, Offset.zero, Paint());
+    canvas.drawImage(image, Offset.zero, Paint());
     // Render the door list
     for (var i = 0; i < ListDoors.length; i++) {
-      canvas1.drawRect(ListDoors[i], Paint()..color = colorDoors);
+      canvas.drawRect(ListDoors[i], Paint()..color = colorDoors);
     }
     // Render the Window list
     for (var j = 0; j < ListWindow.length; j++) {
-      canvas1.drawRect(ListWindow[j], Paint()..color = colorWindows);
+      canvas.drawRect(ListWindow[j], Paint()..color = colorWindows);
     }
 
     // If the current object is a door render it
     if (IsADoor) {
       double x = positionEnd.dx - positionStart.dx;
       double y = positionEnd.dy - positionStart.dy;
-      canvas1.drawRect(
+      canvas.drawRect(
           positionStart & ui.Size(x, y), Paint()..color = colorDoors);
     } else {
       // If the current object is a window render it
       double x = positionEnd.dx - positionStart.dx;
       double y = positionEnd.dy - positionStart.dy;
-      canvas1.drawRect(
+      canvas.drawRect(
           positionStart & ui.Size(x, y), Paint()..color = colorWindows);
     }
-
-    globals.canvas1 = recorder.endRecording();
   }
 
   @override
@@ -159,14 +149,45 @@ class _DrawImageState extends State<DrawImage> {
   }
 
   _Save() async {
-    final picture = globals.canvas1;
+    final pictureRecorder = ui.PictureRecorder();
+    final canvas1 = Canvas(pictureRecorder);
+
+    canvas1.drawImage(_Background, Offset.zero, Paint());
+    // Render the door list
+    for (var i = 0; i < Doors.length; i++) {
+      canvas1.drawRect(
+          Doors[i], Paint()..color = ui.Color.fromARGB(255, 27, 0, 179));
+    }
+    // Render the Window list
+    for (var j = 0; j < Windows.length; j++) {
+      canvas1.drawRect(
+          Windows[j], Paint()..color = ui.Color.fromARGB(255, 0, 179, 95));
+    }
+
+    // If the current object is a door render it
+
+    final picture = pictureRecorder.endRecording();
     final img = await picture.toImage(200, 200);
-    FinalImage = img;
+
+    if (img != null) {
+      print("------ IMAGE LOADED ---");
+      FinalImage = img;
+      img.
+
+    } else {
+      print("------UNABLE TO LOAD IMAGE---");
+    }
   }
 
-  _Upload(img) async {
+  _Upload() async {
     setState(() {}); //show loader
     // Init the Type of request
+    final ByteData? data = await FinalImage.toByteData();
+
+    final image = data!.buffer;
+    
+    
+    final Length = data!.buffer.lengthInBytes;
 
     final request = http.MultipartRequest(
         "POST", Uri.parse("https://shoothouse.cylab.be/upload"));
@@ -174,8 +195,8 @@ class _DrawImageState extends State<DrawImage> {
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
     request.files.add(http.MultipartFile(
-        'image', img!.readAsBytes().asStream(), img!.lengthSync(),
-        filename: img!.path.split("/").last));
+        'image', data,Length,
+        filename: " "));
     // Fill the request with the header
     request.headers.addAll(header);
     // Send the request
@@ -328,12 +349,7 @@ class _DrawImageState extends State<DrawImage> {
           backgroundColor: Colors.red,
           onTap: () {
             _Save();
-            if (FinalImage != null) {
-              print("IMZGE LOADED");
-              _Upload(FinalImage);
-            } else {
-              print("IMZGE NOT LOADED");
-            }
+            _Upload();
           },
         ),
       ]),
