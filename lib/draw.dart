@@ -114,11 +114,21 @@ class _DrawImageState extends State<DrawImage> {
   }
 
   void ErasePrevious() {
+    // Create empty list
+    List<Rect> Buffer = List.empty(growable: true);
+
     setState(() {
       if (IsDoorsAndWindows) {
-        Doors.removeLast();
+        for (int i = 0; i < Doors.length - 1; i++) {
+          Buffer.add(Doors[i]);
+        }
+
+        Doors = Buffer;
       } else {
-        Windows.removeLast();
+        for (int i = 0; i < Windows.length - 1; i++) {
+          Buffer.add(Windows[i]);
+        }
+        Windows = Buffer;
       }
     });
   }
@@ -157,7 +167,7 @@ class _DrawImageState extends State<DrawImage> {
     setState(() {
       _PositionStart = Offset(tapPosition.dx, tapPosition.dy);
 
-      print('Start : ' + _PositionStart.toString());
+      //print('Start : ' + _PositionStart.toString());
     });
   }
 
@@ -166,7 +176,7 @@ class _DrawImageState extends State<DrawImage> {
     setState(() {
       _PositionEnd = Offset(tapPosition.dx, tapPosition.dy);
 
-      print('End : ' + tapPosition.toString());
+      //print('End : ' + tapPosition.toString());
     });
   }
 
@@ -174,7 +184,7 @@ class _DrawImageState extends State<DrawImage> {
     final value = details.velocity.toString();
     setState(() {
       if (value != null) {
-        print('Value : ' + value);
+        //print('Value : ' + value);
         if (IsDoorsAndWindows) {
           double X2 = _PositionEnd.dx - _PositionStart.dx;
           double Y2 = _PositionEnd.dy - _PositionStart.dy;
@@ -182,7 +192,7 @@ class _DrawImageState extends State<DrawImage> {
           Rect myRect = _PositionStart & ui.Size(X2, Y2);
           Doors.add(myRect);
 
-          print(Doors);
+          //print(Doors);
         } else {
           double X2 = _PositionEnd.dx - _PositionStart.dx;
           double Y2 = _PositionEnd.dy - _PositionStart.dy;
