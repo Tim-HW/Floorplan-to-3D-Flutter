@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io' as io;
 import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 import './email.dart';
 import '../rendering/ViewerRendering.dart';
@@ -10,14 +9,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import './../draw.dart';
 
-class ImageInput extends StatefulWidget {
+class ImageInputWindows extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _ImageInputState();
+    return _ImageInputWindowsState();
   }
 }
 
-class _ImageInputState extends State<ImageInput> {
+class _ImageInputWindowsState extends State<ImageInputWindows> {
   io.File? selectedImage;
   String? imagePath;
   String message = "";
@@ -26,18 +25,6 @@ class _ImageInputState extends State<ImageInput> {
   Future<void> _launchUrl(Uri _url) async {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
-    }
-  }
-
-  void _StartScan(BuildContext context) async {
-    var image = await DocumentScannerFlutter.launch(context);
-    if (image != null) {
-      setState(() {
-        //selectedImage = image;
-        selectedImage = io.File(image.path);
-        imagePath = image.path;
-        setState(() {});
-      });
     }
   }
 
@@ -128,6 +115,12 @@ class _ImageInputState extends State<ImageInput> {
                                   child: ElevatedButton(
                                     onPressed: () {
                                       _upload();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DrawImage(imagePath!)),
+                                      );
                                     },
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -180,101 +173,63 @@ class _ImageInputState extends State<ImageInput> {
                               SizedBox(
                                 height: 10,
                               ),
-                              (io.Platform.isAndroid == true)
-                                  ? SizedBox(
-                                      width: 230,
-                                      child: SizedBox(
-                                        width: 230,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      RenderingVeiwer(message)),
-                                            );
-                                          },
-                                          style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.red)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4),
-                                            child: Row(
-                                              children: const [
-                                                Icon(Icons.remove_red_eye),
-                                                Text('       Open 3D viewer')
-                                              ],
-                                            ),
-                                          ),
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    width: 230,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        final Uri _url = Uri.parse(
+                                            'https://shoothouse.cylab.be/veiwer?ID=' +
+                                                message);
+                                        _launchUrl(_url);
+                                      },
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.red)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4),
+                                        child: Row(
+                                          children: const [
+                                            Icon(Icons.download),
+                                            Text('    Download')
+                                          ],
                                         ),
                                       ),
-                                    )
-                                  : (io.Platform.isWindows ||
-                                          io.Platform.isLinux)
-                                      ? Column(
-                                          children: [
-                                            SizedBox(
-                                              width: 230,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  final Uri _url = Uri.parse(
-                                                      'https://shoothouse.cylab.be/veiwer?ID=' +
-                                                          message);
-                                                  _launchUrl(_url);
-                                                },
-                                                style: ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors.red)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  child: Row(
-                                                    children: const [
-                                                      Icon(Icons.download),
-                                                      Text('    Download')
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            SizedBox(
-                                              width: 230,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            DrawImage(
-                                                                imagePath!)),
-                                                  );
-                                                },
-                                                style: ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors.red)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  child: Row(
-                                                    children: const [
-                                                      Icon(Icons.window),
-                                                      Text('    Add Objects')
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 230,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DrawImage(imagePath!)),
+                                        );
+                                      },
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.red)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4),
+                                        child: Row(
+                                          children: const [
+                                            Icon(Icons.window),
+                                            Text('    Add Objects')
                                           ],
-                                        )
-                                      : SizedBox(
-                                          height: 20,
-                                        )
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
                             ])
                 ])
               :
@@ -297,12 +252,7 @@ class _ImageInputState extends State<ImageInput> {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        if (io.Platform.isWindows == true ||
-                            io.Platform.isLinux == true) {
-                          _getFromGalleryWindowsLinux();
-                        } else if (io.Platform.isAndroid == true) {
-                          _StartScan(context);
-                        }
+                        _getFromGalleryWindowsLinux();
                       },
                       style: ButtonStyle(
                           backgroundColor:

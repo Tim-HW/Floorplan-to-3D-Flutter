@@ -16,26 +16,24 @@ class EmailForm extends StatefulWidget {
   }
 }
 
+// Create a global key that uniquely identifies the Form widget
+// and allows validation of the form.
+//
+// Note: This is a GlobalKey<FormState>,
+// not a GlobalKey<EmailFormState>.
+final _formKey = GlobalKey<FormState>();
+final myController = TextEditingController();
+// Initial Selected Value
+String dropdownvalue = '.obj';
+double? _progress;
 
-
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<EmailFormState>.
-  final _formKey = GlobalKey<FormState>();
-  final myController = TextEditingController();
-  // Initial Selected Value
-  String dropdownvalue = '.obj';
-  double? _progress;
-
-  // List of items in our dropdown menu
-  var items = [
-    '.obj',
-    '.fbx',
-    '.stl',
-    '.gltf',
-  ];
+// List of items in our dropdown menu
+var items = [
+  '.obj',
+  '.fbx',
+  '.stl',
+  '.gltf',
+];
 
 // Create a corresponding State class.
 // This class holds data related to the form.
@@ -54,18 +52,19 @@ class EmailFormState extends State<EmailForm> {
     );
   }
 
-
-  void Downloader(String ID, String format){
-
-    FileDownloader.downloadFile
-      (
-        url: 'https://shoothouse.cylab.be/downloader?ID='+ID+'&ext='+format,
-        onProgress: (name,progress){
+  void Downloader(String ID, String format) {
+    FileDownloader.downloadFile(
+        url: 'https://shoothouse.cylab.be/downloader?ID=' +
+            ID +
+            '&ext=' +
+            format,
+        onProgress: (name, progress) {
           setState(() {
             _progress = progress;
           });
         });
-    onDownloadComplet: (value){
+    onDownloadComplet:
+    (value) {
       print('path $value');
       setState(() {
         _progress = null;
@@ -91,44 +90,43 @@ class EmailFormState extends State<EmailForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 10),
-                Text("Choose your format",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        height: 1,
-                        fontSize: 20)),
-                SizedBox(height: 10),
-                DropdownButton(
-                  // Initial Value
-                  value: dropdownvalue,
+                  Text("Choose your format",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          height: 1,
+                          fontSize: 20)),
+                  SizedBox(height: 10),
+                  DropdownButton(
+                    // Initial Value
+                    value: dropdownvalue,
 
-                  // Down Arrow Icon
-                  icon: const Icon(Icons.keyboard_arrow_down),
+                    // Down Arrow Icon
+                    icon: const Icon(Icons.keyboard_arrow_down),
 
-                  // Array list of items
-                  items: items.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items),
-                    );
-                  }).toList(),
-                  // After selecting the desired option,it will
-                  // change button value to selected value
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownvalue = newValue!;
-                    });
-                  },
-                ),
+                    // Array list of items
+                    items: items.map((String items) {
+                      return DropdownMenuItem(
+                        value: items,
+                        child: Text(items),
+                      );
+                    }).toList(),
+                    // After selecting the desired option,it will
+                    // change button value to selected value
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownvalue = newValue!;
+                      });
+                    },
+                  ),
                   SizedBox(
                     width: 200,
                     child: ElevatedButton(
                       onPressed: () {
-                        Downloader(widget.ID,dropdownvalue);
+                        Downloader(widget.ID, dropdownvalue);
                       },
                       style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(
-                              Colors.red)),
+                              MaterialStateProperty.all(Colors.red)),
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Row(
@@ -162,44 +160,41 @@ class EmailFormState extends State<EmailForm> {
                     },
                   ),
                   SizedBox(height: 20),
-
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(170, 50)),
-                      onPressed: () {
-                        // Validate returns true if the form is valid, or false otherwise.
-                        if (_formKey.currentState!.validate() &&
-                            EmailValidator.validate(myController.text)) {
-                          createEmail(
-                              myController.text, dropdownvalue, widget.ID);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Home()),
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                // Retrieve the text the that user has entered by using the
-                                // TextEditingController.
-                                content: Text("Please enter a valide email"),
-                              );
-                            },
-                          );
-                        }
-                      },
-                      child: Row(
-                        children: const [
-                          Icon(Icons.email_outlined),
-                          Text('   Send via email')
-                        ],)
-
-
-                  ),)
-
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(170, 50)),
+                        onPressed: () {
+                          // Validate returns true if the form is valid, or false otherwise.
+                          if (_formKey.currentState!.validate() &&
+                              EmailValidator.validate(myController.text)) {
+                            createEmail(
+                                myController.text, dropdownvalue, widget.ID);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Home()),
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  // Retrieve the text the that user has entered by using the
+                                  // TextEditingController.
+                                  content: Text("Please enter a valide email"),
+                                );
+                              },
+                            );
+                          }
+                        },
+                        child: Row(
+                          children: const [
+                            Icon(Icons.email_outlined),
+                            Text('   Send via email')
+                          ],
+                        )),
+                  )
                 ],
               ),
             )));

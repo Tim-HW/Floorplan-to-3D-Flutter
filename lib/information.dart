@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'picture/image.dart';
 import './informations/RMA-info.dart';
 import './informations/XR-LAB-info.dart';
 import './informations/IRSD.dart';
