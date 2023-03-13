@@ -118,26 +118,6 @@ class EmailFormState extends State<EmailForm> {
                       });
                     },
                   ),
-                  SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Downloader(widget.ID, dropdownvalue);
-                      },
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.red)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          children: const [
-                            Icon(Icons.download),
-                            Text(' Direct Download')
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 50),
                   Text("Email to send the file",
                       style: TextStyle(

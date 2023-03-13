@@ -189,6 +189,38 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                                     ),
                                   ),
                                 ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                width: 230,
+                                child: SizedBox(
+                                  width: 230,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EmailForm(message)),
+                                      );
+                                    },
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.red)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.remove_red_eye),
+                                          Text('       Download')
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               )
                             ])
                 ])

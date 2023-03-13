@@ -172,30 +172,27 @@ class _DrawImageState extends State<DrawImage> {
     if (img != null) {
       print("------ IMAGE LOADED ---");
       FinalImage = img;
-      img.
-
     } else {
       print("------UNABLE TO LOAD IMAGE---");
     }
   }
 
-  _Upload() async {
+  _Upload(selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
     final ByteData? data = await FinalImage.toByteData();
 
     final image = data!.buffer;
-    
-    
-    final Length = data!.buffer.lengthInBytes;
+
+    final Length = data.buffer.lengthInBytes;
 
     final request = http.MultipartRequest(
         "POST", Uri.parse("https://shoothouse.cylab.be/upload"));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
-    request.files.add(http.MultipartFile(
-        'image', data,Length,
+    request.files.add(http.MultipartFile('image',
+        selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
         filename: " "));
     // Fill the request with the header
     request.headers.addAll(header);
@@ -349,7 +346,6 @@ class _DrawImageState extends State<DrawImage> {
           backgroundColor: Colors.red,
           onTap: () {
             _Save();
-            _Upload();
           },
         ),
       ]),
