@@ -114,7 +114,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                                   width: 120,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _upload();
+                                      //_upload();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'dart:io' as io;
 import 'dart:convert';
+import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,7 +88,8 @@ class _DrawImageState extends State<DrawImage> {
                           VARIABLES
 ################################################################
 */
-
+  String imagepath = '';
+  io.File imagefile = io.File('assets/IRSD.png');
   // Image
   late ui.Image FinalImage;
   // Backgronud image
@@ -116,11 +118,11 @@ class _DrawImageState extends State<DrawImage> {
   }
 
   // Function to change the door/window selection
-  void ChangeObject(bool value) {
+  void _changeObject(bool value) {
     IsDoorsAndWindows = value;
   }
 
-  void ErasePrevious() {
+  void _erasePrevious() {
     // Create empty list
     List<Rect> Buffer = List.empty(growable: true);
 
@@ -140,7 +142,7 @@ class _DrawImageState extends State<DrawImage> {
     });
   }
 
-  void Erasedall() {
+  void _erasedall() {
     setState(() {
       // Update the variable
       Doors = List.empty(growable: true);
@@ -148,64 +150,17 @@ class _DrawImageState extends State<DrawImage> {
     });
   }
 
-  _Save() async {
-    final pictureRecorder = ui.PictureRecorder();
-    final canvas1 = Canvas(pictureRecorder);
-
-    canvas1.drawImage(_Background, Offset.zero, Paint());
-    // Render the door list
-    for (var i = 0; i < Doors.length; i++) {
-      canvas1.drawRect(
-          Doors[i], Paint()..color = ui.Color.fromARGB(255, 27, 0, 179));
-    }
-    // Render the Window list
-    for (var j = 0; j < Windows.length; j++) {
-      canvas1.drawRect(
-          Windows[j], Paint()..color = ui.Color.fromARGB(255, 0, 179, 95));
-    }
-
-    // If the current object is a door render it
-
-    final picture = pictureRecorder.endRecording();
-    final img = await picture.toImage(200, 200);
-
-    if (img != null) {
-      print("------ IMAGE LOADED ---");
-      FinalImage = img;
-    } else {
-      print("------UNABLE TO LOAD IMAGE---");
-    }
-  }
-
-  _Upload(selectedImage) async {
-    setState(() {}); //show loader
-    // Init the Type of request
-    final ByteData? data = await FinalImage.toByteData();
-
-    final image = data!.buffer;
-
-    final Length = data.buffer.lengthInBytes;
-
-    final request = http.MultipartRequest(
-        "POST", Uri.parse("https://shoothouse.cylab.be/upload"));
-    // Init the Header of the request
-    final header = {"Content-type": "multipart/from-data"};
-    // Add the image to the request
-    request.files.add(http.MultipartFile('image',
-        selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
-        filename: " "));
-    // Fill the request with the header
-    request.headers.addAll(header);
-    // Send the request
-    final response = await request.send();
-    // Get the answer
-    http.Response res = await http.Response.fromStream(response);
-    // Decode the answer
-    final resJson = jsonDecode(res.body);
-    // Get the message in the json
-    String message = resJson['ID'];
-    // Update the state
-    setState(() {});
+  Future<http.Response> _uploadSquare() {
+    return http.post(
+      Uri.parse('https://shoothouse.cylab.be/string'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'windows': Windows.toString(),
+        'doors': Doors.toString(),
+      }),
+    );
   }
 
   // Function to load the Background
@@ -283,28 +238,53 @@ class _DrawImageState extends State<DrawImage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
-        // Function to update start position of the drag
-        onPanStart: (details) => _getStartPosition(details),
-        // Function to update the current position of the drag
-        onPanUpdate: (details) => _getEndPosition(details),
-        // Function to trigger the end of the drag event
-        onPanEnd: (details) => _getEnd(details),
-        // Actual canvas rendering
-        child: FittedBox(
-          child: SizedBox(
-            // Canvas takes the width of the image
-            width: _Background.width.toDouble(),
-            // Canvas takes the height of the image
-            height: _Background.height.toDouble(),
-            // Render the canvas
-            child: CustomPaint(
-              painter: FacePainter(_Background, _PositionStart, _PositionEnd,
-                  Doors, Windows, IsDoorsAndWindows),
+      body: (imagepath == '')
+          ? GestureDetector(
+              // Function to update start position of the drag
+              onPanStart: (details) => _getStartPosition(details),
+              // Function to update the current position of the drag
+              onPanUpdate: (details) => _getEndPosition(details),
+              // Function to trigger the end of the drag event
+              onPanEnd: (details) => _getEnd(details),
+              // Actual canvas rendering
+              child: FittedBox(
+                child: SizedBox(
+                  // Canvas takes the width of the image
+                  width: _Background.width.toDouble(),
+                  // Canvas takes the height of the image
+                  height: _Background.height.toDouble(),
+                  // Render the canvas
+                  child: CustomPaint(
+                    painter: FacePainter(_Background, _PositionStart,
+                        _PositionEnd, Doors, Windows, IsDoorsAndWindows),
+                  ),
+                ),
+              ),
+            )
+          : DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/back.png"), fit: BoxFit.contain),
+              ),
+              child: Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Image.file(
+                      imagefile,
+                      fit: BoxFit.cover,
+                      height: 300,
+                      width: 300,
+                    ),
+                    //-------------------------------------------------
+                    //         If the image is not uploaded
+                    //-------------------------------------------------
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
       // Add floating button to switch between doors and windows
       floatingActionButton:
           SpeedDial(icon: Icons.add, backgroundColor: Colors.red, children: [
@@ -313,7 +293,7 @@ class _DrawImageState extends State<DrawImage> {
           label: 'Door',
           backgroundColor: Colors.red,
           onTap: () {
-            ChangeObject(true);
+            _changeObject(true);
           },
         ),
         SpeedDialChild(
@@ -321,7 +301,7 @@ class _DrawImageState extends State<DrawImage> {
           label: 'Window',
           backgroundColor: Colors.red,
           onTap: () {
-            ChangeObject(false);
+            _changeObject(false);
           },
         ),
         SpeedDialChild(
@@ -329,7 +309,7 @@ class _DrawImageState extends State<DrawImage> {
           label: 'Erase previous object',
           backgroundColor: Colors.red,
           onTap: () {
-            ErasePrevious();
+            _erasePrevious();
           },
         ),
         SpeedDialChild(
@@ -337,7 +317,7 @@ class _DrawImageState extends State<DrawImage> {
           label: 'Erase everything',
           backgroundColor: Colors.red,
           onTap: () {
-            Erasedall();
+            _erasedall();
           },
         ),
         SpeedDialChild(
@@ -345,7 +325,7 @@ class _DrawImageState extends State<DrawImage> {
           label: 'Send',
           backgroundColor: Colors.red,
           onTap: () {
-            _Save();
+            _uploadSquare();
           },
         ),
       ]),
