@@ -3,11 +3,11 @@ import 'dart:io' as io;
 import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import './email.dart';
-import '../rendering/ViewerRendering.dart';
+import 'AndroidDownload.dart';
+import 'AndroidRendering.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import './../draw.dart';
+import 'WindowsDraw.dart';
 
 class ImageInputAndroid extends StatefulWidget {
   @override
@@ -21,6 +21,8 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
   String? imagePath;
   String message = "";
   bool _isLoading = false;
+
+  String pathUpload = "https://shoothouse.cylab.be/android-upload";
 
   Future<void> _launchUrl(Uri _url) async {
     if (!await launchUrl(_url)) {
@@ -48,8 +50,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
       _isLoading = true;
     }); //show loader
     // Init the Type of request
-    final request = http.MultipartRequest(
-        "POST", Uri.parse("https://shoothouse.cylab.be/upload"));
+    final request = http.MultipartRequest("POST", Uri.parse(pathUpload));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request

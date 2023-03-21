@@ -5,7 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 class IRSD extends StatelessWidget {
   // This widget is the root of your application.
 
-  final Uri _url = Uri.parse('https://www.defence-institute.be/en/accueil-english/');
+  final Uri _url =
+      Uri.parse('https://www.defence-institute.be/en/accueil-english/');
 
   Future<void> _launchUrl() async {
     if (!await launchUrl(_url)) {

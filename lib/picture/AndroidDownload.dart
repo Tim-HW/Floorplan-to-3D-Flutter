@@ -40,7 +40,7 @@ var items = [
 class EmailFormState extends State<EmailForm> {
   Future<http.Response> createEmail(String email, String format, String ID) {
     return http.post(
-      Uri.parse('https://shoothouse.cylab.be/email'),
+      Uri.parse('https://shoothouse.cylab.be/android-download'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
