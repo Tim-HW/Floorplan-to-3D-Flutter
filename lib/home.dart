@@ -18,7 +18,6 @@ class _HomeState extends State<Home> {
   final List _screensWindows = [
     ImageInputWindows(),
     information(),
-    DrawImage('assets/VR.png')
   ];
 
   final List _screensAndroid = [
@@ -58,10 +57,7 @@ class _HomeState extends State<Home> {
                   icon: Icon(Icons.info),
                   label: "Informations",
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.draw_outlined),
-                  label: "Draw",
-                ),
+
                 //put more items here
               ],
             ),

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:floorplan2vr/home.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.ListDoors,
@@ -88,10 +89,9 @@ class _DrawImageState extends State<DrawImage> {
                           VARIABLES
 ################################################################
 */
-  String imagepath = '';
+  String pathUpload = 'https://shoothouse.cylab.be/windows-upload';
   io.File imagefile = io.File('assets/IRSD.png');
-  // Image
-  late ui.Image FinalImage;
+  bool loading = false;
   // Backgronud image
   late ui.Image _Background;
   // Which item is selected
@@ -148,6 +148,30 @@ class _DrawImageState extends State<DrawImage> {
       Doors = List.empty(growable: true);
       Windows = List.empty(growable: true);
     });
+  }
+
+  _uploadImage(selectedImage) async {
+    setState(() {}); //show loader
+    // Init the Type of request
+    final request = http.MultipartRequest("POST", Uri.parse(pathUpload));
+    // Init the Header of the request
+    final header = {"Content-type": "multipart/from-data"};
+    // Add the image to the request
+    request.files.add(http.MultipartFile('image',
+        selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
+        filename: selectedImage!.path.split("/").last));
+    // Fill the request with the header
+    request.headers.addAll(header);
+    // Send the request
+    final response = await request.send();
+    // Get the answer
+    http.Response res = await http.Response.fromStream(response);
+    // Decode the answer
+    final resJson = jsonDecode(res.body);
+    // Get the message in the json
+
+    // Update the state
+    setState(() {});
   }
 
   Future<http.Response> _uploadSquare() {
@@ -238,7 +262,7 @@ class _DrawImageState extends State<DrawImage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: (imagepath == '')
+      body: (loading == false)
           ? GestureDetector(
               // Function to update start position of the drag
               onPanStart: (details) => _getStartPosition(details),
@@ -261,30 +285,12 @@ class _DrawImageState extends State<DrawImage> {
                 ),
               ),
             )
-          : DecoratedBox(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/back.png"), fit: BoxFit.contain),
+          : Column(children: [
+              SizedBox(
+                height: 50,
               ),
-              child: Center(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Image.file(
-                      imagefile,
-                      fit: BoxFit.cover,
-                      height: 300,
-                      width: 300,
-                    ),
-                    //-------------------------------------------------
-                    //         If the image is not uploaded
-                    //-------------------------------------------------
-                  ],
-                ),
-              ),
-            ),
+              SizedBox(width: 100, child: CircularProgressIndicator())
+            ]),
       // Add floating button to switch between doors and windows
       floatingActionButton:
           SpeedDial(icon: Icons.add, backgroundColor: Colors.red, children: [
@@ -325,7 +331,18 @@ class _DrawImageState extends State<DrawImage> {
           label: 'Send',
           backgroundColor: Colors.red,
           onTap: () {
+            setState(() {
+              loading = true;
+            });
             _uploadSquare();
+            _uploadImage(imagefile);
+            setState(() {
+              loading = false;
+            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
           },
         ),
       ]),
