@@ -80,9 +80,7 @@ flutter:
   assets:
     - assets/RMA-logo.png
     - assets/VR.png
-    - assets/cubo.step
-    - assets/cubo.stl
-    - assets/cubo.obj
+    - assets/backgroundWindows.png
     - assets/back.png
     - assets/IRSD.png
   #   - images/a_dot_ham.jpeg

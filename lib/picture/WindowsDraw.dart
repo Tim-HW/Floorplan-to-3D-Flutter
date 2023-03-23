@@ -246,7 +246,6 @@ class _DrawImageState extends State<DrawImage> {
           Rect myRect = _PositionStart & ui.Size(X2, Y2);
           Windows.add(myRect);
           //print(Doors);
-
         }
         _PositionStart = Offset(0, 0);
         _PositionEnd = Offset(0, 0);
@@ -274,9 +273,9 @@ class _DrawImageState extends State<DrawImage> {
               child: FittedBox(
                 child: SizedBox(
                   // Canvas takes the width of the image
-                  width: _Background.width.toDouble(),
+                  width: 1920, //_Background.width.toDouble(),
                   // Canvas takes the height of the image
-                  height: _Background.height.toDouble(),
+                  height: 1080, //_Background.height.toDouble(),
                   // Render the canvas
                   child: CustomPaint(
                     painter: FacePainter(_Background, _PositionStart,
