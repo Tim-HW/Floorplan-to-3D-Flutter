@@ -29,6 +29,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+
+
   flutter:
     sdk: flutter
 
@@ -49,6 +51,7 @@ dependencies:
   device_info_plus: ^8.1.0
   html: ^0.15.2
   flutter_speed_dial: ^6.2.0
+  image: ^3.3.0
 
 
 

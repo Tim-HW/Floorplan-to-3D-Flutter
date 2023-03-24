@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:floorplan2vr/home.dart';
+import 'package:image/image.dart' as img;
+import 'package:flutter/services.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.ListDoors,
@@ -76,8 +78,10 @@ class FacePainter extends CustomPainter {
 }
 
 class DrawImage extends StatefulWidget {
-  DrawImage(this.ImagePath);
-  String ImagePath;
+  DrawImage(this.imagePath, this.height, this.width);
+  String imagePath;
+  double height;
+  double width;
 
   @override
   _DrawImageState createState() => _DrawImageState();
@@ -92,6 +96,7 @@ class _DrawImageState extends State<DrawImage> {
   String pathUpload = 'https://shoothouse.cylab.be/windows-upload';
   io.File imagefile = io.File('assets/IRSD.png');
   bool loading = false;
+
   // Backgronud image
   late ui.Image _Background;
   // Which item is selected
@@ -190,7 +195,7 @@ class _DrawImageState extends State<DrawImage> {
   // Function to load the Background
   Future<void> _asyncInit() async {
     // Load the image
-    final image = await _loadImage(widget.ImagePath);
+    final image = await _loadImage(widget.imagePath);
     setState(() {
       // Update the variable
       _Background = image;
@@ -202,7 +207,8 @@ class _DrawImageState extends State<DrawImage> {
     ByteData bd = await rootBundle.load(imageString);
     // ByteData bd = await rootBundle.load("graphics/bar-1920×1080.jpg");
     final Uint8List bytes = Uint8List.view(bd.buffer);
-    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes,
+        targetHeight: widget.height.toInt(), targetWidth: widget.width.toInt());
     final ui.Image image = (await codec.getNextFrame()).image;
     return image;
     // setState(() => imageStateVarible = image);
@@ -273,9 +279,13 @@ class _DrawImageState extends State<DrawImage> {
               child: FittedBox(
                 child: SizedBox(
                   // Canvas takes the width of the image
-                  width: 1920, //_Background.width.toDouble(),
+                  width: MediaQuery.of(context)
+                      .size
+                      .width, //_Background.width.toDouble(),
                   // Canvas takes the height of the image
-                  height: 1080, //_Background.height.toDouble(),
+                  height: MediaQuery.of(context)
+                      .size
+                      .height, //_Background.height.toDouble(),
                   // Render the canvas
                   child: CustomPaint(
                     painter: FacePainter(_Background, _PositionStart,

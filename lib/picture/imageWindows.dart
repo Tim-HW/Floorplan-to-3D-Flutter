@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -15,6 +16,8 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
   String? imagePath;
   String message = "";
   bool _isLoading = false;
+  double height = 300;
+  double width = 300;
 
   //-------------------------------------------------
   //   Open file picker from windows + Linux
@@ -39,6 +42,9 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
   }
 
   @override
+  void initState() {}
+
+  @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -56,8 +62,8 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                   Image.file(
                     io.File(imagePath!),
                     fit: BoxFit.cover,
-                    height: 300,
-                    width: 300,
+                    height: MediaQuery.of(context).size.height! / 2.round(),
+                    width: MediaQuery.of(context).size.width! / 2.round(),
                   ),
                   //-------------------------------------------------
                   //         If the image is not uploaded
@@ -73,13 +79,48 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                             SizedBox(
                               width: 120,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  //_upload();
+                                onPressed: () async {
+                                  height = MediaQuery.of(context).size.height;
+                                  width = MediaQuery.of(context).size.width;
+
+                                  io.File image = io.File(
+                                      imagePath!); // Or any other way to get a File instance.
+                                  var decodedImage = await decodeImageFromList(
+                                      image.readAsBytesSync());
+
+                                  var imageWidth =
+                                      decodedImage.width.toDouble();
+                                  var imageHeight =
+                                      decodedImage.height.toDouble();
+
+                                  var finalWidth = imageWidth.toDouble();
+                                  var finalHeight = imageHeight.toDouble();
+
+                                  if (imageWidth > width) {
+                                    var ratio = (imageWidth / imageHeight);
+                                    //print("image  : " + imageWidth.toString());
+                                    //print('screen : ' + width.toString());
+                                    var results = (imageWidth ~/ width);
+
+                                    finalWidth = width * results;
+                                    finalHeight = finalWidth / ratio;
+                                  }
+                                  if (finalHeight > height) {
+                                    var ratio = (finalWidth / finalHeight);
+                                    //print("image  : " + imageWidth.toString());
+                                    //print('screen : ' + width.toString());
+                                    var results = (finalHeight ~/ height);
+
+                                    finalHeight = height * results;
+                                    finalWidth = finalHeight * ratio;
+                                  }
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            DrawImage(imagePath!)),
+                                        builder: (context) => DrawImage(
+                                            imagePath!,
+                                            finalHeight,
+                                            finalWidth)),
                                   );
                                 },
                                 style: ButtonStyle(
@@ -143,8 +184,8 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                         height: 20,
                       ),
                       Container(
-                        height: 300.0,
-                        width: 300.0,
+                        height: MediaQuery.of(context).size.height! / 2.round(),
+                        width: MediaQuery.of(context).size.width! / 2.round(),
                         color: Colors.grey,
                         child: Center(child: Text("No image selected")),
                       ),
