@@ -94,8 +94,11 @@ class _DrawImageState extends State<DrawImage> {
 ################################################################
 */
   String pathUpload = 'https://shoothouse.cylab.be/windows-upload';
-  io.File imagefile = io.File('assets/IRSD.png');
+  String pathString = 'https://shoothouse.cylab.be/windows-string';
+
+  io.File? imagefile;
   bool loading = false;
+  String? ID;
 
   // Backgronud image
   late ui.Image _Background;
@@ -158,7 +161,13 @@ class _DrawImageState extends State<DrawImage> {
   _uploadImage(selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
-    final request = http.MultipartRequest("POST", Uri.parse(pathUpload));
+    final request = http.MultipartRequest(
+        "POST",
+        Uri.parse(pathUpload +
+            "?doors=" +
+            Doors.toString() +
+            "&windows=" +
+            Windows.toString()));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
@@ -174,31 +183,19 @@ class _DrawImageState extends State<DrawImage> {
     // Decode the answer
     final resJson = jsonDecode(res.body);
     // Get the message in the json
+    ID = resJson['ID'];
 
     // Update the state
     setState(() {});
   }
 
-  Future<http.Response> _uploadSquare() {
-    return http.post(
-      Uri.parse('https://shoothouse.cylab.be/string'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'windows': Windows.toString(),
-        'doors': Doors.toString(),
-      }),
-    );
-  }
-
   // Function to load the Background
   Future<void> _asyncInit() async {
     // Load the image
-    final image = await _loadImage(widget.imagePath);
+    final imagefile = await _loadImage(widget.imagePath);
     setState(() {
       // Update the variable
-      _Background = image;
+      _Background = imagefile;
     });
   }
 
@@ -343,15 +340,16 @@ class _DrawImageState extends State<DrawImage> {
             setState(() {
               loading = true;
             });
-            _uploadSquare();
+            print("width  : " + widget.width.toString());
+            print("height : " + widget.height.toString());
             _uploadImage(imagefile);
             setState(() {
               loading = false;
             });
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Home()),
-            );
+            //Navigator.push(
+            //  context,
+            //  MaterialPageRoute(builder: (context) => Home()),
+            //);
           },
         ),
       ]),

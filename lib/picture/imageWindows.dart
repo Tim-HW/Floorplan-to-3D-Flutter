@@ -14,8 +14,6 @@ class ImageInputWindows extends StatefulWidget {
 class _ImageInputWindowsState extends State<ImageInputWindows> {
   io.File? selectedImage;
   String? imagePath;
-  String message = "";
-  bool _isLoading = false;
   double height = 300;
   double width = 300;
 
@@ -47,172 +45,133 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage("assets/backgroundWindows.png"),
-            fit: BoxFit.contain),
-      ),
-      child: Center(
-        child: (selectedImage != null)
-            ? Column(
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Image.file(
-                    io.File(imagePath!),
-                    fit: BoxFit.cover,
-                    height: MediaQuery.of(context).size.height! / 2.round(),
-                    width: MediaQuery.of(context).size.width! / 2.round(),
-                  ),
-                  //-------------------------------------------------
-                  //         If the image is not uploaded
-                  //-------------------------------------------------
-                  (message == "")
-                      ?
-                      //-------------------------------------------------
-                      //       If The image is selected but not send
-                      //-------------------------------------------------
-                      Column(
-                          children: [
-                            SizedBox(height: 50),
-                            SizedBox(
-                              width: 120,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  height = MediaQuery.of(context).size.height;
-                                  width = MediaQuery.of(context).size.width;
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("assets/backgroundWindows.png"),
+              fit: BoxFit.contain),
+        ),
+        child: Center(
+          child: (selectedImage != null)
+              ? Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Image.file(
+                      io.File(imagePath!),
+                      fit: BoxFit.cover,
+                      height: MediaQuery.of(context).size.height! / 2.round(),
+                      width: MediaQuery.of(context).size.width! / 2.round(),
+                    ),
+                    //-------------------------------------------------
+                    //         If the image is not uploaded
+                    //-------------------------------------------------
 
-                                  io.File image = io.File(
-                                      imagePath!); // Or any other way to get a File instance.
-                                  var decodedImage = await decodeImageFromList(
-                                      image.readAsBytesSync());
+                    //-------------------------------------------------
+                    //       If The image is selected but not send
+                    //-------------------------------------------------
+                    Column(
+                      children: [
+                        SizedBox(height: 50),
+                        SizedBox(
+                          width: 120,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              height = MediaQuery.of(context).size.height;
+                              width = MediaQuery.of(context).size.width;
 
-                                  var imageWidth =
-                                      decodedImage.width.toDouble();
-                                  var imageHeight =
-                                      decodedImage.height.toDouble();
+                              io.File image = io.File(
+                                  imagePath!); // Or any other way to get a File instance.
+                              var decodedImage = await decodeImageFromList(
+                                  image.readAsBytesSync());
 
-                                  var finalWidth = imageWidth.toDouble();
-                                  var finalHeight = imageHeight.toDouble();
+                              var imageWidth = decodedImage.width.toDouble();
+                              var imageHeight = decodedImage.height.toDouble();
 
-                                  if (imageWidth > width) {
-                                    var ratio = (imageWidth / imageHeight);
-                                    //print("image  : " + imageWidth.toString());
-                                    //print('screen : ' + width.toString());
-                                    var results = (imageWidth ~/ width);
+                              var finalWidth = imageWidth.toDouble();
+                              var finalHeight = imageHeight.toDouble();
 
-                                    finalWidth = width * results;
-                                    finalHeight = finalWidth / ratio;
-                                  }
-                                  if (finalHeight > height) {
-                                    var ratio = (finalWidth / finalHeight);
-                                    //print("image  : " + imageWidth.toString());
-                                    //print('screen : ' + width.toString());
-                                    var results = (finalHeight ~/ height);
+                              if (imageWidth > width) {
+                                var ratio = (imageWidth / imageHeight);
+                                //print("image  : " + imageWidth.toString());
+                                //print('screen : ' + width.toString());
+                                var results = (imageWidth ~/ width);
 
-                                    finalHeight = height * results;
-                                    finalWidth = finalHeight * ratio;
-                                  }
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DrawImage(
-                                            imagePath!,
-                                            finalHeight,
-                                            finalWidth)),
-                                  );
-                                },
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.upgrade),
-                                      Text('Run')
-                                    ],
-                                  ),
-                                ),
+                                finalWidth = width * results;
+                                finalHeight = finalWidth / ratio;
+                              }
+                              if (finalHeight > height) {
+                                var ratio = (finalWidth / finalHeight);
+                                //print("image  : " + imageWidth.toString());
+                                //print('screen : ' + width.toString());
+                                var results = (finalHeight ~/ height);
+
+                                finalHeight = height * results;
+                                finalWidth = finalHeight * ratio;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DrawImage(
+                                        imagePath!, finalHeight, finalWidth)),
+                              );
+                            },
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.upgrade),
+                                  Text('Run')
+                                ],
                               ),
-                            )
-                          ],
-                        )
-                      //-------------------------------------------------
-                      //         If the image selected and uploaded
-                      //-------------------------------------------------
-                      : Column(
-                          children: [
-                            SizedBox(
-                              height: 50,
-                            ),
-                            SizedBox(
-                                width: 100, child: CircularProgressIndicator())
-                          ],
-                        ),
-                ],
-              )
-
-            //-------------------------------------------------
-            //         If the image uploaded failed
-            //-------------------------------------------------
-            : (message == 'ERROR')
-                ? Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        child: Text('ERROR cannot transform in 3D'),
-                      )
-                    ],
-                  )
-
-                //-------------------------------------------------
-                //   If the image uploaded Successfuly transformed
-                //-------------------------------------------------
-
-                :
-                //-------------------------------------------------
-                //   If the image is not selected yet
-                //-------------------------------------------------
-
-                Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height! / 2.round(),
-                        width: MediaQuery.of(context).size.width! / 2.round(),
-                        color: Colors.grey,
-                        child: Center(child: Text("No image selected")),
-                      ),
-                      SizedBox(height: 50),
-                      SizedBox(
-                        width: 120,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _getFromGalleryWindowsLinux();
-                          },
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.red)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Row(
-                              children: const [
-                                Icon(Icons.upload_file),
-                                Text(' Upload')
-                              ],
                             ),
                           ),
+                        )
+                      ],
+                    ),
+                  ],
+                )
+
+              //-------------------------------------------------
+              //   If the image is not selected yet
+              //-------------------------------------------------
+              : Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height! / 2.round(),
+                      width: MediaQuery.of(context).size.width! / 2.round(),
+                      color: Colors.grey,
+                      child: Center(child: Text("No image selected")),
+                    ),
+                    SizedBox(height: 50),
+                    SizedBox(
+                      width: 120,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _getFromGalleryWindowsLinux();
+                        },
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Row(
+                            children: const [
+                              Icon(Icons.upload_file),
+                              Text(' Upload')
+                            ],
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-      ),
-    );
+                      ),
+                    )
+                  ],
+                ),
+        ));
   }
 }
