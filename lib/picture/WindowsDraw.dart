@@ -167,7 +167,11 @@ class _DrawImageState extends State<DrawImage> {
             "?doors=" +
             Doors.toString() +
             "&windows=" +
-            Windows.toString()));
+            Windows.toString() +
+            "&height=" +
+            widget.height.toString() +
+            "&width=" +
+            widget.width.toString()));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
@@ -191,12 +195,10 @@ class _DrawImageState extends State<DrawImage> {
 
   // Function to load the Background
   Future<void> _asyncInit() async {
-    // Load the image
-    final imagefile = await _loadImage(widget.imagePath);
-    setState(() {
-      // Update the variable
-      _Background = imagefile;
-    });
+    // Update the variable
+    _Background = await _loadImage(widget.imagePath);
+    imagefile = io.File(widget.imagePath);
+    setState(() {});
   }
 
   // Load image function
