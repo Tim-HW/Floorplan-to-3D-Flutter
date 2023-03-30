@@ -189,6 +189,8 @@ class _DrawImageState extends State<DrawImage> {
     // Get the message in the json
     ID = resJson['ID'];
 
+    ui.Image image = resJson['ImageBytes'];
+
     // Update the state
     setState(() {});
   }
