@@ -6,9 +6,10 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:floorplan2vr/home.dart';
 import 'package:image/image.dart' as img;
-import 'WindowsWall.dart';
-import 'package:file_saver/file_saver.dart';
+import 'package:flutter/services.dart';
+import 'WindowsDraw.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.ListDoors,
@@ -28,9 +29,9 @@ class FacePainter extends CustomPainter {
   final Offset positionEnd;
 
   // Color for Windows
-  Color colorWindows = ui.Color.fromARGB(255, 27, 0, 179);
+  Color colorWindows = ui.Color.fromARGB(255, 255, 255, 255);
   // Color for Doors
-  Color colorDoors = ui.Color.fromARGB(255, 0, 179, 95);
+  Color colorDoors = ui.Color.fromARGB(255, 0, 0, 0);
 
   // Main function to print on the canvas
 
@@ -77,17 +78,15 @@ class FacePainter extends CustomPainter {
   }
 }
 
-class DrawImage extends StatefulWidget {
-  DrawImage(this.imagePath, this.height, this.width);
-  String imagePath;
-  double height;
-  double width;
+class DrawWall extends StatefulWidget {
+  DrawWall(this.imageWall);
+  ui.Image imageWall;
 
   @override
-  _DrawImageState createState() => _DrawImageState();
+  _DrawWallState createState() => _DrawWallState();
 }
 
-class _DrawImageState extends State<DrawImage> {
+class _DrawWallState extends State<DrawWall> {
   /*
 ################################################################
                           VARIABLES
@@ -96,13 +95,9 @@ class _DrawImageState extends State<DrawImage> {
   String pathUpload = 'https://shoothouse.cylab.be/windows-upload';
   String pathString = 'https://shoothouse.cylab.be/windows-string';
 
-  io.File? imagefile;
-  ui.Image? imagewall;
   bool loading = false;
   String? ID;
 
-  // Backgronud image
-  late ui.Image _Background;
   // Which item is selected
   bool IsDoorsAndWindows = false;
   // Current start position
@@ -119,13 +114,6 @@ class _DrawImageState extends State<DrawImage> {
                           FUNCTIONS
 ################################################################
 */
-
-  @override
-  // Init function to load the background
-  void initState() {
-    _asyncInit();
-  }
-
   // Function to change the door/window selection
   void _changeObject(bool value) {
     IsDoorsAndWindows = value;
@@ -162,101 +150,25 @@ class _DrawImageState extends State<DrawImage> {
   Future<void> _uploadImage(selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
-    final request = http.MultipartRequest(
-        "POST",
-        Uri.parse(pathUpload +
-            "?doors=" +
-            Doors.toString() +
-            "&windows=" +
-            Windows.toString() +
-            "&height=" +
-            widget.height.toString() +
-            "&width=" +
-            widget.width.toString()));
+    final request = http.MultipartRequest("POST", Uri.parse(pathUpload));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
         filename: selectedImage!.path.split("/").last));
+    // Fill the request with the header
+    request.headers.addAll(header);
+    // Send the request
     final response = await request.send();
     // Get the answer
     http.Response res = await http.Response.fromStream(response);
     // Decode the answer
     final resJson = jsonDecode(res.body);
     // Get the message in the json
-    ID = resJson['ID'];
 
-    String sbytes = resJson['ImageBytes'].toString();
-
-    String fileName = 'my_image.jpg';
-    final file = io.File(fileName);
-
-    final List<int> codeUnits = sbytes.codeUnits;
-    await file.writeAsBytes(codeUnits);
-
-    // MEMORY
-    //final Uint8List _bytesImage = Base64Decoder().convert(sbytes);
-    //var test = Image.memory(_bytesImage);
-
-    // DECODE MAIN
-
-    final Uint8List uint8list = Uint8List.fromList(codeUnits);
-    //ui.Codec codec = await ui.instantiateImageCodec(uint8list);
-    //ui.FrameInfo frameInfo = await codec.getNextFrame();
-
-    //imagewall = frameInfo.image;
-
-    // Get the temporary directory for storing the file.
-    //io.Directory tempDir = await syspaths.getTemporaryDirectory();
-    //String tempPath = tempDir.path;
-
-    // Create a new file in the temporary directory.
-    //String filename = 'my_image.jpg';
-    //io.File imagefile = io.File('$tempPath/$filename');
-
-    // Write the image data to the file.
-    //await imagefile.writeAsBytes(uint8list);
-
-    await FileSaver.instance.saveFile(
-        name: 'provided',
-        bytes: uint8list,
-        file: imagefile,
-        filePath: '.assets/',
-        ext: 'png',
-        mimeType: MimeType.png);
-
-    var ttt = io.File.fromRawPath(uint8list);
-
-    /*
-    final List<int> codeUnits = sbytes.codeUnits;
-    final Uint8List uint8list = Uint8List.fromList(codeUnits);
-    final ui.Codec codec = await ui.instantiateImageCodec(uint8list);
-    final ui.FrameInfo frame = await codec.getNextFrame();
-    imagewall = frame.image;
-    */
     // Update the state
     setState(() {});
-  }
-
-  // Function to load the Background
-  Future<void> _asyncInit() async {
-    // Update the variable
-    _Background = await _loadImage(widget.imagePath);
-    imagefile = io.File(widget.imagePath);
-    setState(() {});
-  }
-
-  // Load image function
-  Future<ui.Image> _loadImage(imageString) async {
-    ByteData bd = await rootBundle.load(imageString);
-    // ByteData bd = await rootBundle.load("graphics/bar-1920×1080.jpg");
-    final Uint8List bytes = Uint8List.view(bd.buffer);
-    final ui.Codec codec = await ui.instantiateImageCodec(bytes,
-        targetHeight: widget.height.toInt(), targetWidth: widget.width.toInt());
-    final ui.Image image = (await codec.getNextFrame()).image;
-    return image;
-    // setState(() => imageStateVarible = image);
   }
 
   void _getStartPosition(DragStartDetails details) async {
@@ -333,7 +245,7 @@ class _DrawImageState extends State<DrawImage> {
                       .height, //_Background.height.toDouble(),
                   // Render the canvas
                   child: CustomPaint(
-                    painter: FacePainter(_Background, _PositionStart,
+                    painter: FacePainter(widget.imageWall, _PositionStart,
                         _PositionEnd, Doors, Windows, IsDoorsAndWindows),
                   ),
                 ),
@@ -388,15 +300,14 @@ class _DrawImageState extends State<DrawImage> {
             setState(() {
               loading = true;
             });
-            print("width  : " + widget.width.toString());
-            print("height : " + widget.height.toString());
-            _uploadImage(imagefile);
+
+            _uploadImage(widget.imageWall);
             setState(() {
               loading = false;
             });
             //Navigator.push(
             //  context,
-            //  MaterialPageRoute(builder: (context) => DrawWall(imagewall!)),
+            //  MaterialPageRoute(builder: (context) => Home()),
             //);
           },
         ),
