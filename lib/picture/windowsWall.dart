@@ -1,25 +1,19 @@
 import 'dart:ui' as ui;
-import 'dart:io' as io;
 import 'dart:convert';
-import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:floorplan2vr/home.dart';
-import 'package:image/image.dart' as img;
-import 'package:flutter/services.dart';
 
 class FacePainter extends CustomPainter {
-  FacePainter(this.image, this.positionStart, this.positionEnd, this.Listvoids,
-      this.Listwall, this.IsAvoid);
+  FacePainter(this.image, this.positionStart, this.positionEnd, this.listvoids,
+      this.listwall, this.isAvoid);
 
   // To know if the void/walls is selected
-  final bool IsAvoid;
+  final bool isAvoid;
   // List of voids
-  final List<Rect> Listvoids;
+  final List<Rect> listvoids;
   // List of walls
-  final List<Rect> Listwall;
+  final List<Rect> listwall;
   // Background Image
   final ui.Image image;
   // Current startposition
@@ -38,16 +32,16 @@ class FacePainter extends CustomPainter {
     // Upload image on the background
     canvas.drawImage(image, Offset.zero, Paint());
     // Render the void list
-    for (var i = 0; i < Listvoids.length; i++) {
-      canvas.drawRect(Listvoids[i], Paint()..color = colorvoids);
+    for (var i = 0; i < listvoids.length; i++) {
+      canvas.drawRect(listvoids[i], Paint()..color = colorvoids);
     }
     // Render the wall list
-    for (var j = 0; j < Listwall.length; j++) {
-      canvas.drawRect(Listwall[j], Paint()..color = colorwalls);
+    for (var j = 0; j < listwall.length; j++) {
+      canvas.drawRect(listwall[j], Paint()..color = colorwalls);
     }
 
     // If the current object is a door render it
-    if (IsAvoid) {
+    if (isAvoid) {
       double x = positionEnd.dx - positionStart.dx;
       double y = positionEnd.dy - positionStart.dy;
       canvas.drawRect(
@@ -67,9 +61,9 @@ class FacePainter extends CustomPainter {
     if (image != oldDelegate.image ||
         positionStart != oldDelegate.positionStart ||
         positionEnd != oldDelegate.positionEnd ||
-        Listvoids != oldDelegate.Listvoids ||
-        Listwall != oldDelegate.Listwall ||
-        IsAvoid != oldDelegate.IsAvoid) {
+        listvoids != oldDelegate.listvoids ||
+        listwall != oldDelegate.listwall ||
+        isAvoid != oldDelegate.isAvoid) {
       return true;
     } else {
       return false;
@@ -93,17 +87,16 @@ class _DrawWallState extends State<DrawWall> {
 ################################################################
 */
   String pathUpload = 'https://shoothouse.cylab.be/walls-upload';
-  String pathString = 'https://shoothouse.cylab.be/walls-string';
 
   bool loading = false;
-  String? ID;
+  String? id;
 
   // Which item is selected
-  bool IsvoidsAndwalls = false;
+  bool isvoidsAndwalls = false;
   // Current start position
-  Offset _PositionStart = Offset(0, 0);
+  Offset _positionStart = Offset(0, 0);
   // Current end position
-  Offset _PositionEnd = Offset(0, 0);
+  Offset _positionEnd = Offset(0, 0);
   // List of door
   List<Rect> voids = List.empty(growable: true);
   // List of wall
@@ -116,25 +109,25 @@ class _DrawWallState extends State<DrawWall> {
 */
   // Function to change the door/wall selection
   void _changeObject(bool value) {
-    IsvoidsAndwalls = value;
+    isvoidsAndwalls = value;
   }
 
   void _erasePrevious() {
     // Create empty list
-    List<Rect> Buffer = List.empty(growable: true);
+    List<Rect> buffer = List.empty(growable: true);
 
     setState(() {
-      if (IsvoidsAndwalls) {
+      if (isvoidsAndwalls) {
         for (int i = 0; i < voids.length - 1; i++) {
-          Buffer.add(voids[i]);
+          buffer.add(voids[i]);
         }
 
-        voids = Buffer;
+        voids = buffer;
       } else {
         for (int i = 0; i < walls.length - 1; i++) {
-          Buffer.add(walls[i]);
+          buffer.add(walls[i]);
         }
-        walls = Buffer;
+        walls = buffer;
       }
     });
   }
@@ -150,7 +143,13 @@ class _DrawWallState extends State<DrawWall> {
   Future<void> _uploadImage(selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
-    final request = http.MultipartRequest("POST", Uri.parse(pathUpload));
+    final request = http.MultipartRequest(
+        "POST",
+        Uri.parse(pathUpload +
+            "?voids=" +
+            voids.toString() +
+            "&walls=" +
+            walls.toString()));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
@@ -172,45 +171,42 @@ class _DrawWallState extends State<DrawWall> {
   void _getStartPosition(DragStartDetails details) async {
     final tapPosition = details.localPosition;
     setState(() {
-      _PositionStart = Offset(tapPosition.dx, tapPosition.dy);
+      _positionStart = Offset(tapPosition.dx, tapPosition.dy);
 
-      //print('Start : ' + _PositionStart.toString());
+      //print('Start : ' + _positionStart.toString());
     });
   }
 
   void _getEndPosition(DragUpdateDetails details) async {
     final tapPosition = details.localPosition;
     setState(() {
-      _PositionEnd = Offset(tapPosition.dx, tapPosition.dy);
+      _positionEnd = Offset(tapPosition.dx, tapPosition.dy);
 
       //print('End : ' + tapPosition.toString());
     });
   }
 
   void _getEnd(DragEndDetails details) async {
-    final value = details.velocity.toString();
     setState(() {
-      if (value != null) {
-        //print('Value : ' + value);
-        if (IsvoidsAndwalls) {
-          double X2 = _PositionEnd.dx - _PositionStart.dx;
-          double Y2 = _PositionEnd.dy - _PositionStart.dy;
+      //print('Value : ' + value);
+      if (isvoidsAndwalls) {
+        double x2 = _positionEnd.dx - _positionStart.dx;
+        double y2 = _positionEnd.dy - _positionStart.dy;
 
-          Rect myRect = _PositionStart & ui.Size(X2, Y2);
-          voids.add(myRect);
+        Rect myRect = _positionStart & ui.Size(x2, y2);
+        voids.add(myRect);
 
-          //print(voids);
-        } else {
-          double X2 = _PositionEnd.dx - _PositionStart.dx;
-          double Y2 = _PositionEnd.dy - _PositionStart.dy;
+        //print(voids);
+      } else {
+        double x2 = _positionEnd.dx - _positionStart.dx;
+        double y2 = _positionEnd.dy - _positionStart.dy;
 
-          Rect myRect = _PositionStart & ui.Size(X2, Y2);
-          walls.add(myRect);
-          //print(voids);
-        }
-        _PositionStart = Offset(0, 0);
-        _PositionEnd = Offset(0, 0);
+        Rect myRect = _positionStart & ui.Size(x2, y2);
+        walls.add(myRect);
+        //print(voids);
       }
+      _positionStart = Offset(0, 0);
+      _positionEnd = Offset(0, 0);
     });
   }
 
@@ -243,8 +239,8 @@ class _DrawWallState extends State<DrawWall> {
                       .height, //_Background.height.toDouble(),
                   // Render the canvas
                   child: CustomPaint(
-                    painter: FacePainter(widget.imageWall, _PositionStart,
-                        _PositionEnd, voids, walls, IsvoidsAndwalls),
+                    painter: FacePainter(widget.imageWall, _positionStart,
+                        _positionEnd, voids, walls, isvoidsAndwalls),
                   ),
                 ),
               ),
@@ -259,15 +255,15 @@ class _DrawWallState extends State<DrawWall> {
       floatingActionButton:
           SpeedDial(icon: Icons.add, backgroundColor: Colors.red, children: [
         SpeedDialChild(
-          child: const Icon(Icons.door_back_door, color: Colors.white),
-          label: 'Door',
+          child: const Icon(Icons.rectangle_outlined, color: Colors.white),
+          label: 'void',
           backgroundColor: Colors.red,
           onTap: () {
             _changeObject(true);
           },
         ),
         SpeedDialChild(
-          child: const Icon(Icons.rectangle_outlined, color: Colors.white),
+          child: const Icon(Icons.rectangle, color: Colors.white),
           label: 'wall',
           backgroundColor: Colors.red,
           onTap: () {
@@ -300,6 +296,7 @@ class _DrawWallState extends State<DrawWall> {
             });
 
             _uploadImage(widget.imageWall);
+
             setState(() {
               loading = false;
             });

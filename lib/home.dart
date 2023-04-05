@@ -5,7 +5,7 @@ import 'package:floorplan2vr/picture/imageAndroid.dart';
 import 'package:flutter/material.dart';
 import 'picture/imageWindows.dart';
 import 'picture/imageAndroid.dart';
-import 'picture/WindowsDraw.dart';
+import 'picture/windowsDraw.dart';
 
 class Home extends StatefulWidget {
   @override

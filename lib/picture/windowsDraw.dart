@@ -1,14 +1,10 @@
 import 'dart:ui' as ui;
 import 'dart:io' as io;
-import 'dart:convert';
-import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:image/image.dart' as img;
-import 'WindowsWall.dart';
-import 'package:file_saver/file_saver.dart';
+import 'windowsWall.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.ListDoors,
@@ -94,21 +90,20 @@ class _DrawImageState extends State<DrawImage> {
 ################################################################
 */
   String pathUpload = 'https://shoothouse.cylab.be/windows-upload';
-  String pathString = 'https://shoothouse.cylab.be/windows-string';
 
   io.File? imagefile;
   late ui.Image imagewall;
   bool loading = false;
-  String? ID;
+  String? id;
 
   // Backgronud image
-  late ui.Image _Background;
+  late ui.Image _background;
   // Which item is selected
   bool IsDoorsAndWindows = false;
   // Current start position
-  Offset _PositionStart = Offset(0, 0);
+  Offset _positionStart = Offset(0, 0);
   // Current end position
-  Offset _PositionEnd = Offset(0, 0);
+  Offset _positionEnd = Offset(0, 0);
   // List of door
   List<Rect> Doors = List.empty(growable: true);
   // List of window
@@ -133,20 +128,20 @@ class _DrawImageState extends State<DrawImage> {
 
   void _erasePrevious() {
     // Create empty list
-    List<Rect> Buffer = List.empty(growable: true);
+    List<Rect> buffer = List.empty(growable: true);
 
     setState(() {
       if (IsDoorsAndWindows) {
         for (int i = 0; i < Doors.length - 1; i++) {
-          Buffer.add(Doors[i]);
+          buffer.add(Doors[i]);
         }
 
-        Doors = Buffer;
+        Doors = buffer;
       } else {
         for (int i = 0; i < Windows.length - 1; i++) {
-          Buffer.add(Windows[i]);
+          buffer.add(Windows[i]);
         }
-        Windows = Buffer;
+        Windows = buffer;
       }
     });
   }
@@ -173,8 +168,6 @@ class _DrawImageState extends State<DrawImage> {
             widget.height.toString() +
             "&width=" +
             widget.width.toString()));
-    // Init the Header of the request
-    final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
@@ -182,16 +175,9 @@ class _DrawImageState extends State<DrawImage> {
     final response = await request.send();
     // Get the answer
     http.Response res = await http.Response.fromStream(response);
-    // Decode the answer
-
-    //var img = Image.memory(bytes);
-
-    //ui.Image uivar;
 
     final Uint8List bytes = Uint8List.view(res.bodyBytes.buffer);
-    final ui.Codec codec = await ui.instantiateImageCodec(bytes,
-        targetHeight: widget.height.toInt(), targetWidth: widget.width.toInt());
-
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
     imagewall = (await codec.getNextFrame()).image;
 
     return imagewall;
@@ -200,7 +186,7 @@ class _DrawImageState extends State<DrawImage> {
   // Function to load the Background
   Future<void> _asyncInit() async {
     // Update the variable
-    _Background = await _loadImage(widget.imagePath);
+    _background = await _loadImage(widget.imagePath);
     imagefile = io.File(widget.imagePath);
 
     setState(() {});
@@ -221,7 +207,7 @@ class _DrawImageState extends State<DrawImage> {
   void _getStartPosition(DragStartDetails details) async {
     final tapPosition = details.localPosition;
     setState(() {
-      _PositionStart = Offset(tapPosition.dx, tapPosition.dy);
+      _positionStart = Offset(tapPosition.dx, tapPosition.dy);
 
       //print('Start : ' + _PositionStart.toString());
     });
@@ -230,7 +216,7 @@ class _DrawImageState extends State<DrawImage> {
   void _getEndPosition(DragUpdateDetails details) async {
     final tapPosition = details.localPosition;
     setState(() {
-      _PositionEnd = Offset(tapPosition.dx, tapPosition.dy);
+      _positionEnd = Offset(tapPosition.dx, tapPosition.dy);
 
       //print('End : ' + tapPosition.toString());
     });
@@ -239,27 +225,24 @@ class _DrawImageState extends State<DrawImage> {
   void _getEnd(DragEndDetails details) async {
     final value = details.velocity.toString();
     setState(() {
-      if (value != null) {
-        //print('Value : ' + value);
-        if (IsDoorsAndWindows) {
-          double X2 = _PositionEnd.dx - _PositionStart.dx;
-          double Y2 = _PositionEnd.dy - _PositionStart.dy;
+      if (IsDoorsAndWindows) {
+        double x2 = _positionEnd.dx - _positionStart.dx;
+        double y2 = _positionEnd.dy - _positionStart.dy;
 
-          Rect myRect = _PositionStart & ui.Size(X2, Y2);
-          Doors.add(myRect);
+        Rect myRect = _positionStart & ui.Size(x2, y2);
+        Doors.add(myRect);
 
-          //print(Doors);
-        } else {
-          double X2 = _PositionEnd.dx - _PositionStart.dx;
-          double Y2 = _PositionEnd.dy - _PositionStart.dy;
+        //print(Doors);
+      } else {
+        double x2 = _positionEnd.dx - _positionStart.dx;
+        double y2 = _positionEnd.dy - _positionStart.dy;
 
-          Rect myRect = _PositionStart & ui.Size(X2, Y2);
-          Windows.add(myRect);
-          //print(Doors);
-        }
-        _PositionStart = Offset(0, 0);
-        _PositionEnd = Offset(0, 0);
+        Rect myRect = _positionStart & ui.Size(x2, y2);
+        Windows.add(myRect);
+        //print(Doors);
       }
+      _positionStart = const Offset(0, 0);
+      _positionEnd = const Offset(0, 0);
     });
   }
 
@@ -285,15 +268,15 @@ class _DrawImageState extends State<DrawImage> {
                   // Canvas takes the width of the image
                   width: MediaQuery.of(context)
                       .size
-                      .width, //_Background.width.toDouble(),
+                      .width, //_background.width.toDouble(),
                   // Canvas takes the height of the image
                   height: MediaQuery.of(context)
                       .size
-                      .height, //_Background.height.toDouble(),
+                      .height, //_background.height.toDouble(),
                   // Render the canvas
                   child: CustomPaint(
-                    painter: FacePainter(_Background, _PositionStart,
-                        _PositionEnd, Doors, Windows, IsDoorsAndWindows),
+                    painter: FacePainter(_background, _positionStart,
+                        _positionEnd, Doors, Windows, IsDoorsAndWindows),
                   ),
                 ),
               ),

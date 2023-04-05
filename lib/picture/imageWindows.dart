@@ -1,8 +1,7 @@
-import 'dart:ffi';
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'WindowsDraw.dart';
+import 'windowsDraw.dart';
 
 class ImageInputWindows extends StatefulWidget {
   @override
