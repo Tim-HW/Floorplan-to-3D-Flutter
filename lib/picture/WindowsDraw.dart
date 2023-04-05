@@ -97,7 +97,7 @@ class _DrawImageState extends State<DrawImage> {
   String pathString = 'https://shoothouse.cylab.be/windows-string';
 
   io.File? imagefile;
-  ui.Image? imagewall;
+  late ui.Image imagewall;
   bool loading = false;
   String? ID;
 
@@ -159,7 +159,7 @@ class _DrawImageState extends State<DrawImage> {
     });
   }
 
-  Future<void> _uploadImage(selectedImage) async {
+  Future<ui.Image> _uploadImage(selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
     final request = http.MultipartRequest(
@@ -183,60 +183,18 @@ class _DrawImageState extends State<DrawImage> {
     // Get the answer
     http.Response res = await http.Response.fromStream(response);
     // Decode the answer
-    final resJson = jsonDecode(res.body);
-    // Get the message in the json
-    ID = resJson['ID'];
 
-    String sbytes = resJson['ImageBytes'].toString();
+    //var img = Image.memory(bytes);
 
-    String fileName = 'my_image.jpg';
-    final file = io.File(fileName);
+    //ui.Image uivar;
 
-    final List<int> codeUnits = sbytes.codeUnits;
-    await file.writeAsBytes(codeUnits);
+    final Uint8List bytes = Uint8List.view(res.bodyBytes.buffer);
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes,
+        targetHeight: widget.height.toInt(), targetWidth: widget.width.toInt());
 
-    // MEMORY
-    //final Uint8List _bytesImage = Base64Decoder().convert(sbytes);
-    //var test = Image.memory(_bytesImage);
+    imagewall = (await codec.getNextFrame()).image;
 
-    // DECODE MAIN
-
-    final Uint8List uint8list = Uint8List.fromList(codeUnits);
-    //ui.Codec codec = await ui.instantiateImageCodec(uint8list);
-    //ui.FrameInfo frameInfo = await codec.getNextFrame();
-
-    //imagewall = frameInfo.image;
-
-    // Get the temporary directory for storing the file.
-    //io.Directory tempDir = await syspaths.getTemporaryDirectory();
-    //String tempPath = tempDir.path;
-
-    // Create a new file in the temporary directory.
-    //String filename = 'my_image.jpg';
-    //io.File imagefile = io.File('$tempPath/$filename');
-
-    // Write the image data to the file.
-    //await imagefile.writeAsBytes(uint8list);
-
-    await FileSaver.instance.saveFile(
-        name: 'provided',
-        bytes: uint8list,
-        file: imagefile,
-        filePath: '.assets/',
-        ext: 'png',
-        mimeType: MimeType.png);
-
-    var ttt = io.File.fromRawPath(uint8list);
-
-    /*
-    final List<int> codeUnits = sbytes.codeUnits;
-    final Uint8List uint8list = Uint8List.fromList(codeUnits);
-    final ui.Codec codec = await ui.instantiateImageCodec(uint8list);
-    final ui.FrameInfo frame = await codec.getNextFrame();
-    imagewall = frame.image;
-    */
-    // Update the state
-    setState(() {});
+    return imagewall;
   }
 
   // Function to load the Background
@@ -244,6 +202,7 @@ class _DrawImageState extends State<DrawImage> {
     // Update the variable
     _Background = await _loadImage(widget.imagePath);
     imagefile = io.File(widget.imagePath);
+
     setState(() {});
   }
 
@@ -339,12 +298,14 @@ class _DrawImageState extends State<DrawImage> {
                 ),
               ),
             )
-          : Column(children: [
-              SizedBox(
-                height: 50,
-              ),
-              SizedBox(width: 100, child: CircularProgressIndicator())
-            ]),
+          : Center(
+              child: Column(children: [
+                SizedBox(
+                  height: 50,
+                ),
+                SizedBox(width: 100, child: CircularProgressIndicator())
+              ]),
+            ),
       // Add floating button to switch between doors and windows
       floatingActionButton:
           SpeedDial(icon: Icons.add, backgroundColor: Colors.red, children: [
@@ -384,16 +345,27 @@ class _DrawImageState extends State<DrawImage> {
           child: const Icon(Icons.upload, color: Colors.white),
           label: 'Send',
           backgroundColor: Colors.red,
-          onTap: () {
+          onTap: () async {
             setState(() {
               loading = true;
             });
-            print("width  : " + widget.width.toString());
-            print("height : " + widget.height.toString());
-            _uploadImage(imagefile);
+            //print("width  : " + widget.width.toString());
+            //print("height : " + widget.height.toString());
+            imagewall = await _uploadImage(imagefile);
+
             setState(() {
               loading = false;
             });
+
+            if (imagewall == null) {
+              print("image didn't load");
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DrawWall(imagewall)),
+              );
+            }
+
             //Navigator.push(
             //  context,
             //  MaterialPageRoute(builder: (context) => DrawWall(imagewall!)),

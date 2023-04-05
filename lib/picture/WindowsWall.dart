@@ -9,18 +9,17 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:floorplan2vr/home.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart';
-import 'WindowsDraw.dart';
 
 class FacePainter extends CustomPainter {
-  FacePainter(this.image, this.positionStart, this.positionEnd, this.ListDoors,
-      this.ListWindow, this.IsADoor);
+  FacePainter(this.image, this.positionStart, this.positionEnd, this.Listvoids,
+      this.Listwall, this.IsAvoid);
 
-  // To know if the door/windows is selected
-  final bool IsADoor;
-  // List of Doors
-  final List<Rect> ListDoors;
-  // List of Windows
-  final List<Rect> ListWindow;
+  // To know if the void/walls is selected
+  final bool IsAvoid;
+  // List of voids
+  final List<Rect> Listvoids;
+  // List of walls
+  final List<Rect> Listwall;
   // Background Image
   final ui.Image image;
   // Current startposition
@@ -28,37 +27,37 @@ class FacePainter extends CustomPainter {
   // Current Endposition
   final Offset positionEnd;
 
-  // Color for Windows
-  Color colorWindows = ui.Color.fromARGB(255, 255, 255, 255);
-  // Color for Doors
-  Color colorDoors = ui.Color.fromARGB(255, 0, 0, 0);
+  // Color for walls
+  Color colorwalls = ui.Color.fromARGB(255, 255, 255, 255);
+  // Color for voids
+  Color colorvoids = ui.Color.fromARGB(255, 0, 0, 0);
 
   // Main function to print on the canvas
 
   void paint(Canvas canvas, ui.Size size) {
     // Upload image on the background
     canvas.drawImage(image, Offset.zero, Paint());
-    // Render the door list
-    for (var i = 0; i < ListDoors.length; i++) {
-      canvas.drawRect(ListDoors[i], Paint()..color = colorDoors);
+    // Render the void list
+    for (var i = 0; i < Listvoids.length; i++) {
+      canvas.drawRect(Listvoids[i], Paint()..color = colorvoids);
     }
-    // Render the Window list
-    for (var j = 0; j < ListWindow.length; j++) {
-      canvas.drawRect(ListWindow[j], Paint()..color = colorWindows);
+    // Render the wall list
+    for (var j = 0; j < Listwall.length; j++) {
+      canvas.drawRect(Listwall[j], Paint()..color = colorwalls);
     }
 
     // If the current object is a door render it
-    if (IsADoor) {
+    if (IsAvoid) {
       double x = positionEnd.dx - positionStart.dx;
       double y = positionEnd.dy - positionStart.dy;
       canvas.drawRect(
-          positionStart & ui.Size(x, y), Paint()..color = colorDoors);
+          positionStart & ui.Size(x, y), Paint()..color = colorvoids);
     } else {
-      // If the current object is a window render it
+      // If the current object is a wall render it
       double x = positionEnd.dx - positionStart.dx;
       double y = positionEnd.dy - positionStart.dy;
       canvas.drawRect(
-          positionStart & ui.Size(x, y), Paint()..color = colorWindows);
+          positionStart & ui.Size(x, y), Paint()..color = colorwalls);
     }
   }
 
@@ -68,9 +67,9 @@ class FacePainter extends CustomPainter {
     if (image != oldDelegate.image ||
         positionStart != oldDelegate.positionStart ||
         positionEnd != oldDelegate.positionEnd ||
-        ListDoors != oldDelegate.ListDoors ||
-        ListWindow != oldDelegate.ListWindow ||
-        IsADoor != oldDelegate.IsADoor) {
+        Listvoids != oldDelegate.Listvoids ||
+        Listwall != oldDelegate.Listwall ||
+        IsAvoid != oldDelegate.IsAvoid) {
       return true;
     } else {
       return false;
@@ -80,6 +79,7 @@ class FacePainter extends CustomPainter {
 
 class DrawWall extends StatefulWidget {
   DrawWall(this.imageWall);
+
   ui.Image imageWall;
 
   @override
@@ -92,31 +92,31 @@ class _DrawWallState extends State<DrawWall> {
                           VARIABLES
 ################################################################
 */
-  String pathUpload = 'https://shoothouse.cylab.be/windows-upload';
-  String pathString = 'https://shoothouse.cylab.be/windows-string';
+  String pathUpload = 'https://shoothouse.cylab.be/walls-upload';
+  String pathString = 'https://shoothouse.cylab.be/walls-string';
 
   bool loading = false;
   String? ID;
 
   // Which item is selected
-  bool IsDoorsAndWindows = false;
+  bool IsvoidsAndwalls = false;
   // Current start position
   Offset _PositionStart = Offset(0, 0);
   // Current end position
   Offset _PositionEnd = Offset(0, 0);
   // List of door
-  List<Rect> Doors = List.empty(growable: true);
-  // List of window
-  List<Rect> Windows = List.empty(growable: true);
+  List<Rect> voids = List.empty(growable: true);
+  // List of wall
+  List<Rect> walls = List.empty(growable: true);
 
   /*
 ################################################################
                           FUNCTIONS
 ################################################################
 */
-  // Function to change the door/window selection
+  // Function to change the door/wall selection
   void _changeObject(bool value) {
-    IsDoorsAndWindows = value;
+    IsvoidsAndwalls = value;
   }
 
   void _erasePrevious() {
@@ -124,17 +124,17 @@ class _DrawWallState extends State<DrawWall> {
     List<Rect> Buffer = List.empty(growable: true);
 
     setState(() {
-      if (IsDoorsAndWindows) {
-        for (int i = 0; i < Doors.length - 1; i++) {
-          Buffer.add(Doors[i]);
+      if (IsvoidsAndwalls) {
+        for (int i = 0; i < voids.length - 1; i++) {
+          Buffer.add(voids[i]);
         }
 
-        Doors = Buffer;
+        voids = Buffer;
       } else {
-        for (int i = 0; i < Windows.length - 1; i++) {
-          Buffer.add(Windows[i]);
+        for (int i = 0; i < walls.length - 1; i++) {
+          Buffer.add(walls[i]);
         }
-        Windows = Buffer;
+        walls = Buffer;
       }
     });
   }
@@ -142,8 +142,8 @@ class _DrawWallState extends State<DrawWall> {
   void _erasedall() {
     setState(() {
       // Update the variable
-      Doors = List.empty(growable: true);
-      Windows = List.empty(growable: true);
+      voids = List.empty(growable: true);
+      walls = List.empty(growable: true);
     });
   }
 
@@ -163,9 +163,7 @@ class _DrawWallState extends State<DrawWall> {
     final response = await request.send();
     // Get the answer
     http.Response res = await http.Response.fromStream(response);
-    // Decode the answer
-    final resJson = jsonDecode(res.body);
-    // Get the message in the json
+    var responseBody = jsonDecode(res.body);
 
     // Update the state
     setState(() {});
@@ -194,21 +192,21 @@ class _DrawWallState extends State<DrawWall> {
     setState(() {
       if (value != null) {
         //print('Value : ' + value);
-        if (IsDoorsAndWindows) {
+        if (IsvoidsAndwalls) {
           double X2 = _PositionEnd.dx - _PositionStart.dx;
           double Y2 = _PositionEnd.dy - _PositionStart.dy;
 
           Rect myRect = _PositionStart & ui.Size(X2, Y2);
-          Doors.add(myRect);
+          voids.add(myRect);
 
-          //print(Doors);
+          //print(voids);
         } else {
           double X2 = _PositionEnd.dx - _PositionStart.dx;
           double Y2 = _PositionEnd.dy - _PositionStart.dy;
 
           Rect myRect = _PositionStart & ui.Size(X2, Y2);
-          Windows.add(myRect);
-          //print(Doors);
+          walls.add(myRect);
+          //print(voids);
         }
         _PositionStart = Offset(0, 0);
         _PositionEnd = Offset(0, 0);
@@ -246,7 +244,7 @@ class _DrawWallState extends State<DrawWall> {
                   // Render the canvas
                   child: CustomPaint(
                     painter: FacePainter(widget.imageWall, _PositionStart,
-                        _PositionEnd, Doors, Windows, IsDoorsAndWindows),
+                        _PositionEnd, voids, walls, IsvoidsAndwalls),
                   ),
                 ),
               ),
@@ -257,7 +255,7 @@ class _DrawWallState extends State<DrawWall> {
               ),
               SizedBox(width: 100, child: CircularProgressIndicator())
             ]),
-      // Add floating button to switch between doors and windows
+      // Add floating button to switch between voids and walls
       floatingActionButton:
           SpeedDial(icon: Icons.add, backgroundColor: Colors.red, children: [
         SpeedDialChild(
@@ -269,8 +267,8 @@ class _DrawWallState extends State<DrawWall> {
           },
         ),
         SpeedDialChild(
-          child: const Icon(Icons.window, color: Colors.white),
-          label: 'Window',
+          child: const Icon(Icons.rectangle_outlined, color: Colors.white),
+          label: 'wall',
           backgroundColor: Colors.red,
           onTap: () {
             _changeObject(false);
