@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 import 'dart:io' as io;
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,6 +91,7 @@ class _DrawImageState extends State<DrawImage> {
 ################################################################
 */
   String pathUpload = 'https://shoothouse.cylab.be/windows-upload';
+  String pathDownload = 'https://shoothouse.cylab.be/windows-wall';
 
   io.File? imagefile;
   late ui.Image imagewall;
@@ -154,7 +156,24 @@ class _DrawImageState extends State<DrawImage> {
     });
   }
 
-  Future<ui.Image> _uploadImage(selectedImage) async {
+  Future<ui.Image> _downloadImage() async {
+    final uri = Uri.parse(pathDownload + '?id=' + id.toString()!);
+
+    var request = http.MultipartRequest("GET", uri);
+    var response = await request.send();
+
+    // Get the answer
+    http.Response res = await http.Response.fromStream(response);
+
+    final Uint8List bytes = Uint8List.view(res.bodyBytes.buffer);
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+
+    imagewall = (await codec.getNextFrame()).image;
+
+    return imagewall;
+  }
+
+  Future<String> _uploadImage(selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
     final request = http.MultipartRequest(
@@ -172,15 +191,14 @@ class _DrawImageState extends State<DrawImage> {
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
         filename: selectedImage!.path.split("/").last));
+
     final response = await request.send();
     // Get the answer
     http.Response res = await http.Response.fromStream(response);
-
-    final Uint8List bytes = Uint8List.view(res.bodyBytes.buffer);
-    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
-    imagewall = (await codec.getNextFrame()).image;
-
-    return imagewall;
+    // Decode the answer
+    final resJson = jsonDecode(res.body);
+    // Get the message in the json
+    return resJson['ID'];
   }
 
   // Function to load the Background
@@ -334,7 +352,8 @@ class _DrawImageState extends State<DrawImage> {
             });
             //print("width  : " + widget.width.toString());
             //print("height : " + widget.height.toString());
-            imagewall = await _uploadImage(imagefile);
+            id = await _uploadImage(imagefile);
+            imagewall = await _downloadImage();
 
             setState(() {
               loading = false;
@@ -345,14 +364,10 @@ class _DrawImageState extends State<DrawImage> {
             } else {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DrawWall(imagewall)),
+                MaterialPageRoute(
+                    builder: (context) => DrawWall(imagewall, id!)),
               );
             }
-
-            //Navigator.push(
-            //  context,
-            //  MaterialPageRoute(builder: (context) => DrawWall(imagewall!)),
-            //);
           },
         ),
       ]),

@@ -72,9 +72,10 @@ class FacePainter extends CustomPainter {
 }
 
 class DrawWall extends StatefulWidget {
-  DrawWall(this.imageWall);
+  DrawWall(this.imageWall, this.id);
 
   ui.Image imageWall;
+  String id;
 
   @override
   _DrawWallState createState() => _DrawWallState();
@@ -205,8 +206,8 @@ class _DrawWallState extends State<DrawWall> {
         walls.add(myRect);
         //print(voids);
       }
-      _positionStart = Offset(0, 0);
-      _positionEnd = Offset(0, 0);
+      _positionStart = const Offset(0, 0);
+      _positionEnd = const Offset(0, 0);
     });
   }
 
