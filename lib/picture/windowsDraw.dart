@@ -173,9 +173,10 @@ class _DrawImageState extends State<DrawImage> {
     return imagewall;
   }
 
-  Future<String> _uploadImage(selectedImage) async {
+  Future<String> _uploadImage(io.File selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
+
     final request = http.MultipartRequest(
         "POST",
         Uri.parse(pathUpload +
@@ -189,7 +190,7 @@ class _DrawImageState extends State<DrawImage> {
             widget.width.toString()));
     // Add the image to the request
     request.files.add(http.MultipartFile('image',
-        selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
+        selectedImage!.readAsBytes().asStream(), selectedImage.lengthSync(),
         filename: selectedImage!.path.split("/").last));
 
     final response = await request.send();
@@ -352,7 +353,7 @@ class _DrawImageState extends State<DrawImage> {
             });
             //print("width  : " + widget.width.toString());
             //print("height : " + widget.height.toString());
-            id = await _uploadImage(imagefile);
+            id = await _uploadImage(imagefile!);
             imagewall = await _downloadImage();
 
             setState(() {

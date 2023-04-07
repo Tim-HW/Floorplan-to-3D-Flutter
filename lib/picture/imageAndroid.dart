@@ -215,7 +215,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                                       padding: const EdgeInsets.all(4),
                                       child: Row(
                                         children: const [
-                                          Icon(Icons.remove_red_eye),
+                                          Icon(Icons.download),
                                           Text('       Download')
                                         ],
                                       ),

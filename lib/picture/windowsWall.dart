@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.listvoids,
@@ -87,10 +88,9 @@ class _DrawWallState extends State<DrawWall> {
                           VARIABLES
 ################################################################
 */
-  String pathUpload = 'https://shoothouse.cylab.be/walls-upload';
+  String pathUpload = 'https://shoothouse.cylab.be/windows-wall';
 
   bool loading = false;
-  String? id;
 
   // Which item is selected
   bool isvoidsAndwalls = false;
@@ -141,24 +141,31 @@ class _DrawWallState extends State<DrawWall> {
     });
   }
 
-  Future<void> _uploadImage(selectedImage) async {
+  Future<void> _uploadImage(ui.Image selectedImage) async {
     setState(() {}); //show loader
     // Init the Type of request
+
+    final bytes = await selectedImage.toByteData();
+
+    final listbytes = bytes!.buffer.lengthInBytes;
+
+    final stream = List<int>.from(bytes.buffer.asUint8List());
+
     final request = http.MultipartRequest(
         "POST",
         Uri.parse(pathUpload +
             "?voids=" +
             voids.toString() +
             "&walls=" +
-            walls.toString()));
+            walls.toString() +
+            "&ID=" +
+            widget.id!));
     // Init the Header of the request
     final header = {"Content-type": "multipart/from-data"};
     // Add the image to the request
-    request.files.add(http.MultipartFile('image',
-        selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
-        filename: selectedImage!.path.split("/").last));
+    request.files.add(
+        http.MultipartFile.fromBytes('image', stream, filename: "wut.png"));
     // Fill the request with the header
-    request.headers.addAll(header);
     // Send the request
     final response = await request.send();
     // Get the answer
