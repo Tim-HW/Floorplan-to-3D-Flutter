@@ -1,13 +1,14 @@
 import 'dart:io' as io;
 
 import 'package:floorplan2vr/information.dart';
-import 'package:floorplan2vr/picture/imageAndroid.dart';
+import 'package:floorplan2vr/picture/image-android.dart';
 import 'package:flutter/material.dart';
-import 'picture/imageWindows.dart';
-import 'picture/imageAndroid.dart';
-import 'picture/windowsDraw.dart';
+import 'picture/image-windows.dart';
+import 'picture/image-android.dart';
+import 'picture/windows-draw.dart';
 
 class Home extends StatefulWidget {
+  const Home({super.key});
   @override
   _HomeState createState() => _HomeState();
 }
@@ -16,13 +17,13 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
 
   final List _screensWindows = [
-    ImageInputWindows(),
-    information(),
+    const ImageInputWindows(),
+    const Information(),
   ];
 
   final List _screensAndroid = [
     ImageInputAndroid(),
-    information(),
+    const Information(),
   ];
 
   void _updateIndex(int value) {
@@ -36,7 +37,7 @@ class _HomeState extends State<Home> {
     return (io.Platform.isWindows || io.Platform.isLinux)
         ? Scaffold(
             appBar: AppBar(
-              title: Center(child: Text("Floorplans 2 Mesh")),
+              title: const Center(child: Text("Floorplans 2 Mesh")),
             ),
             body: _screensWindows[_currentIndex],
             bottomNavigationBar: BottomNavigationBar(
@@ -47,7 +48,7 @@ class _HomeState extends State<Home> {
               unselectedFontSize: 13,
               iconSize: 30,
               //bottom navigation bar on scaffold
-              items: [
+              items: const [
                 //items inside navigation bar
                 BottomNavigationBarItem(
                   icon: Icon(Icons.add),
@@ -64,7 +65,7 @@ class _HomeState extends State<Home> {
           )
         : Scaffold(
             appBar: AppBar(
-              title: Center(child: Text("Floorplans 2 Mesh")),
+              title: const Center(child: Text("Floorplans 2 Mesh")),
             ),
             body: _screensAndroid[_currentIndex],
             bottomNavigationBar: BottomNavigationBar(
@@ -75,7 +76,7 @@ class _HomeState extends State<Home> {
               unselectedFontSize: 13,
               iconSize: 30,
               //bottom navigation bar on scaffold
-              items: [
+              items: const [
                 //items inside navigation bar
                 BottomNavigationBarItem(
                   icon: Icon(Icons.add),

@@ -71,9 +71,6 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
   }
 
   @override
-  void initState() {}
-
-  @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: const BoxDecoration(
@@ -91,8 +88,8 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                   Image.file(
                     io.File(imagePath!),
                     fit: BoxFit.cover,
-                    height: MediaQuery.of(context).size.height! / 2.round(),
-                    width: MediaQuery.of(context).size.width! / 2.round(),
+                    height: MediaQuery.of(context).size.height / 2.round(),
+                    width: MediaQuery.of(context).size.width / 2.round(),
                   ),
                   //-------------------------------------------------
                   //         If the image is not uploaded
@@ -116,7 +113,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
 
                             waiting(image);
 
-                            if (finalHeight != null) {
+                            if (imagePath != null) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

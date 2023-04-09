@@ -3,7 +3,9 @@ import 'informations/RMA-info.dart';
 import 'informations/XR-LAB-info.dart';
 import 'informations/IRSD.dart';
 
-class information extends StatelessWidget {
+class Information extends StatelessWidget {
+  const Information({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

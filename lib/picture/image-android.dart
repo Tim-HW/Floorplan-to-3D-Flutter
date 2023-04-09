@@ -3,11 +3,11 @@ import 'dart:io' as io;
 import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'androidDownload.dart';
-import 'androidRendering.dart';
+import 'android-download.dart';
+import 'android-rendering.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'windowsDraw.dart';
+import 'windows-draw.dart';
 
 class ImageInputAndroid extends StatefulWidget {
   @override

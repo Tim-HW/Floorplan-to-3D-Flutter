@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'windowsWall.dart';
+import 'windows-wall.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.listdoors,
@@ -75,7 +75,7 @@ class FacePainter extends CustomPainter {
 }
 
 class DrawImage extends StatefulWidget {
-  DrawImage(this.imagePath, this.height, this.width);
+  const DrawImage(this.imagePath, this.height, this.width);
   final String imagePath;
   final double height;
   final double width;

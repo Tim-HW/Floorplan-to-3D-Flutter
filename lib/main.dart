@@ -1,6 +1,4 @@
-import 'dart:io' as io;
 import 'package:flutter/material.dart';
-import 'home.dart';
 import 'home.dart';
 
 void main() {
@@ -28,6 +26,6 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
           primarySwatch: Colors.red,
         ),
-        home: Home());
+        home: const Home());
   }
 }
