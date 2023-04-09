@@ -123,6 +123,16 @@ class _DrawImageState extends State<DrawImage> {
     _asyncInit();
   }
 
+  // Function to load the Background
+  _asyncInit() async {
+    setState(() {});
+    // Update the variable
+    _background = await _loadImage(widget.imagePath);
+    imagefile = io.File(widget.imagePath);
+
+    setState(() {});
+  }
+
   // Function to change the door/window selection
   void _changeObject(bool value) {
     isdoorsAndwindows = value;
@@ -158,8 +168,9 @@ class _DrawImageState extends State<DrawImage> {
 
   Future<ui.Image> _downloadImage() async {
     String urlid = '?id=$id';
+    String finalurl = pathDownload + urlid;
 
-    final uri = Uri.parse(pathDownload + urlid);
+    final uri = Uri.parse(finalurl);
 
     var request = http.MultipartRequest("GET", uri);
     var response = await request.send();
@@ -168,6 +179,7 @@ class _DrawImageState extends State<DrawImage> {
     http.Response res = await http.Response.fromStream(response);
 
     final Uint8List bytes = Uint8List.view(res.bodyBytes.buffer);
+
     final ui.Codec codec = await ui.instantiateImageCodec(bytes);
 
     imagewall = (await codec.getNextFrame()).image;
@@ -201,20 +213,6 @@ class _DrawImageState extends State<DrawImage> {
     final resJson = jsonDecode(res.body);
     // Get the message in the json
     return resJson['ID'];
-  }
-
-  // Function to load the Background
-  Future<void> _asyncInit() async {
-    // Update the variable
-    _background = await _loadImage(widget.imagePath);
-    imagefile = io.File(widget.imagePath);
-
-    setState(() {});
-  }
-
-  void waiting() async {
-    id = await _uploadImage(imagefile!);
-    imagewall = await _downloadImage();
   }
 
   // Load image function
@@ -353,17 +351,17 @@ class _DrawImageState extends State<DrawImage> {
           child: const Icon(Icons.upload, color: Colors.white),
           label: 'Send',
           backgroundColor: Colors.red,
-          onTap: () {
+          onTap: () async {
             setState(() {
               loading = true;
             });
             //print("width  : " + widget.width.toString());
             //print("height : " + widget.height.toString());
 
-            setState(() {
-              loading = false;
-              waiting();
-            });
+            id = await _uploadImage(imagefile!);
+            imagewall = await _downloadImage();
+
+            loading = false;
 
             Navigator.push(
               context,

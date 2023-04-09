@@ -146,7 +146,7 @@ class _DrawWallState extends State<DrawWall> {
 
     final stream = List<int>.from(bytes!.buffer.asUint8List());
 
-    String param = "?voids=$voids&walls=$walls&ID{widget.id}";
+    String param = "?voids=$voids&walls=$walls&ID${widget.id}";
 
     final request =
         http.MultipartRequest("POST", Uri.parse(pathUpload + param));
@@ -287,19 +287,11 @@ class _DrawWallState extends State<DrawWall> {
           label: 'Send',
           backgroundColor: Colors.red,
           onTap: () {
-            setState(() {
-              loading = true;
-            });
+            loading = true;
 
             _uploadImage(widget.imageWall);
 
-            setState(() {
-              loading = false;
-            });
-            //Navigator.push(
-            //  context,
-            //  MaterialPageRoute(builder: (context) => Home()),
-            //);
+            loading = false;
           },
         ),
       ]),

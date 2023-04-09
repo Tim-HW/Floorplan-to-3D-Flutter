@@ -30,10 +30,10 @@ class _RenderingState extends State<RenderingVeiwer> {
           brightness: Brightness.light,
           primarySwatch: Colors.red),
       home: Scaffold(
-        appBar: AppBar(title: Text("3D Floorplan Viewer")),
+        appBar: AppBar(title: const Text("3D Floorplan Viewer")),
         body: ModelViewer(
-          backgroundColor: Color.fromARGB(255, 0, 0, 0),
-          src: 'https://shoothouse.cylab.be/android-viewer?ID=' + widget.ID,
+          backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+          src: 'https://shoothouse.cylab.be/android-viewer?ID=${widget.ID}',
           alt: 'yesyes',
           ar: true,
           autoRotate: true,

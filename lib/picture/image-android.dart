@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'android-download.dart';
 import 'android-rendering.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'windows-draw.dart';
 
 class ImageInputAndroid extends StatefulWidget {
+  const ImageInputAndroid({super.key});
   @override
   State<StatefulWidget> createState() {
     return _ImageInputAndroidState();
@@ -24,13 +22,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
 
   String pathUpload = "https://shoothouse.cylab.be/android-upload";
 
-  Future<void> _launchUrl(Uri _url) async {
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
-    }
-  }
-
-  void _StartScan(BuildContext context) async {
+  void _startScan(BuildContext context) async {
     var image = await DocumentScannerFlutter.launch(context);
     if (image != null) {
       setState(() {
@@ -78,14 +70,14 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
             image: AssetImage("assets/back.png"), fit: BoxFit.contain),
       ),
       child: Center(
           child: (selectedImage != null)
               ? Column(children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Image.file(
@@ -104,7 +96,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                           //-------------------------------------------------
                           ? Column(
                               children: [
-                                SizedBox(height: 50),
+                                const SizedBox(height: 50),
                                 SizedBox(
                                   width: 120,
                                   child: ElevatedButton(
@@ -131,7 +123,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                           //-------------------------------------------------
                           //         If the image selected and uploaded
                           //-------------------------------------------------
-                          : Column(children: [
+                          : Column(children: const [
                               SizedBox(
                                 height: 50,
                               ),
@@ -145,7 +137,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                       //-------------------------------------------------
                       : (message == 'ERROR')
                           ? Column(
-                              children: [
+                              children: const [
                                 SizedBox(
                                   height: 20,
                                 ),
@@ -159,7 +151,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                           //   If the image uploaded Successfuly transformed
                           //-------------------------------------------------
                           : Column(children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               SizedBox(
@@ -191,7 +183,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               SizedBox(
@@ -231,21 +223,21 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
               //-------------------------------------------------
 
               Column(children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Container(
                     height: 300.0,
                     width: 300.0,
                     color: Colors.grey,
-                    child: Center(child: Text("No image selected")),
+                    child: const Center(child: Text("No image selected")),
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   SizedBox(
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        _StartScan(context);
+                        _startScan(context);
                       },
                       style: ButtonStyle(
                           backgroundColor:
