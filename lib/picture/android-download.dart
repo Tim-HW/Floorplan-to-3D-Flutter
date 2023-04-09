@@ -63,13 +63,10 @@ class EmailFormState extends State<EmailForm> {
             _progress = progress;
           });
         });
-    onDownloadComplet:
-    (value) {
-      print('path $value');
-      setState(() {
-        _progress = null;
-      });
-    };
+
+    setState(() {
+      _progress = null;
+    });
   }
 
   @override

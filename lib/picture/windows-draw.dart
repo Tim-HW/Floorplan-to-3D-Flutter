@@ -8,15 +8,15 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'windowsWall.dart';
 
 class FacePainter extends CustomPainter {
-  FacePainter(this.image, this.positionStart, this.positionEnd, this.ListDoors,
-      this.ListWindow, this.IsADoor);
+  FacePainter(this.image, this.positionStart, this.positionEnd, this.listdoors,
+      this.listWindow, this.isADoor);
 
   // To know if the door/windows is selected
-  final bool IsADoor;
-  // List of Doors
-  final List<Rect> ListDoors;
-  // List of Windows
-  final List<Rect> ListWindow;
+  final bool isADoor;
+  // List of doors
+  final List<Rect> listdoors;
+  // List of windows
+  final List<Rect> listWindow;
   // Background Image
   final ui.Image image;
   // Current startposition
@@ -24,37 +24,37 @@ class FacePainter extends CustomPainter {
   // Current Endposition
   final Offset positionEnd;
 
-  // Color for Windows
-  Color colorWindows = ui.Color.fromARGB(255, 27, 0, 179);
-  // Color for Doors
-  Color colorDoors = ui.Color.fromARGB(255, 0, 179, 95);
+  // Color for windows
+  Color colorwindows = const ui.Color.fromARGB(255, 27, 0, 179);
+  // Color for doors
+  Color colordoors = const ui.Color.fromARGB(255, 0, 179, 95);
 
   // Main function to print on the canvas
-
+  @override
   void paint(Canvas canvas, ui.Size size) {
     // Upload image on the background
     canvas.drawImage(image, Offset.zero, Paint());
     // Render the door list
-    for (var i = 0; i < ListDoors.length; i++) {
-      canvas.drawRect(ListDoors[i], Paint()..color = colorDoors);
+    for (var i = 0; i < listdoors.length; i++) {
+      canvas.drawRect(listdoors[i], Paint()..color = colordoors);
     }
     // Render the Window list
-    for (var j = 0; j < ListWindow.length; j++) {
-      canvas.drawRect(ListWindow[j], Paint()..color = colorWindows);
+    for (var j = 0; j < listWindow.length; j++) {
+      canvas.drawRect(listWindow[j], Paint()..color = colorwindows);
     }
 
     // If the current object is a door render it
-    if (IsADoor) {
+    if (isADoor) {
       double x = positionEnd.dx - positionStart.dx;
       double y = positionEnd.dy - positionStart.dy;
       canvas.drawRect(
-          positionStart & ui.Size(x, y), Paint()..color = colorDoors);
+          positionStart & ui.Size(x, y), Paint()..color = colordoors);
     } else {
       // If the current object is a window render it
       double x = positionEnd.dx - positionStart.dx;
       double y = positionEnd.dy - positionStart.dy;
       canvas.drawRect(
-          positionStart & ui.Size(x, y), Paint()..color = colorWindows);
+          positionStart & ui.Size(x, y), Paint()..color = colorwindows);
     }
   }
 
@@ -64,9 +64,9 @@ class FacePainter extends CustomPainter {
     if (image != oldDelegate.image ||
         positionStart != oldDelegate.positionStart ||
         positionEnd != oldDelegate.positionEnd ||
-        ListDoors != oldDelegate.ListDoors ||
-        ListWindow != oldDelegate.ListWindow ||
-        IsADoor != oldDelegate.IsADoor) {
+        listdoors != oldDelegate.listdoors ||
+        listWindow != oldDelegate.listWindow ||
+        isADoor != oldDelegate.isADoor) {
       return true;
     } else {
       return false;
@@ -76,9 +76,9 @@ class FacePainter extends CustomPainter {
 
 class DrawImage extends StatefulWidget {
   DrawImage(this.imagePath, this.height, this.width);
-  String imagePath;
-  double height;
-  double width;
+  final String imagePath;
+  final double height;
+  final double width;
 
   @override
   _DrawImageState createState() => _DrawImageState();
@@ -101,15 +101,15 @@ class _DrawImageState extends State<DrawImage> {
   // Backgronud image
   late ui.Image _background;
   // Which item is selected
-  bool IsDoorsAndWindows = false;
+  bool isdoorsAndwindows = false;
   // Current start position
-  Offset _positionStart = Offset(0, 0);
+  Offset _positionStart = const Offset(0, 0);
   // Current end position
-  Offset _positionEnd = Offset(0, 0);
+  Offset _positionEnd = const Offset(0, 0);
   // List of door
-  List<Rect> Doors = List.empty(growable: true);
+  List<Rect> doors = List.empty(growable: true);
   // List of window
-  List<Rect> Windows = List.empty(growable: true);
+  List<Rect> windows = List.empty(growable: true);
 
   /*
 ################################################################
@@ -125,7 +125,7 @@ class _DrawImageState extends State<DrawImage> {
 
   // Function to change the door/window selection
   void _changeObject(bool value) {
-    IsDoorsAndWindows = value;
+    isdoorsAndwindows = value;
   }
 
   void _erasePrevious() {
@@ -133,17 +133,17 @@ class _DrawImageState extends State<DrawImage> {
     List<Rect> buffer = List.empty(growable: true);
 
     setState(() {
-      if (IsDoorsAndWindows) {
-        for (int i = 0; i < Doors.length - 1; i++) {
-          buffer.add(Doors[i]);
+      if (isdoorsAndwindows) {
+        for (int i = 0; i < doors.length - 1; i++) {
+          buffer.add(doors[i]);
         }
 
-        Doors = buffer;
+        doors = buffer;
       } else {
-        for (int i = 0; i < Windows.length - 1; i++) {
-          buffer.add(Windows[i]);
+        for (int i = 0; i < windows.length - 1; i++) {
+          buffer.add(windows[i]);
         }
-        Windows = buffer;
+        windows = buffer;
       }
     });
   }
@@ -151,13 +151,15 @@ class _DrawImageState extends State<DrawImage> {
   void _erasedall() {
     setState(() {
       // Update the variable
-      Doors = List.empty(growable: true);
-      Windows = List.empty(growable: true);
+      doors = List.empty(growable: true);
+      windows = List.empty(growable: true);
     });
   }
 
   Future<ui.Image> _downloadImage() async {
-    final uri = Uri.parse(pathDownload + '?id=' + id.toString()!);
+    String urlid = '?id=$id';
+
+    final uri = Uri.parse(pathDownload + urlid);
 
     var request = http.MultipartRequest("GET", uri);
     var response = await request.send();
@@ -177,21 +179,20 @@ class _DrawImageState extends State<DrawImage> {
     setState(() {}); //show loader
     // Init the Type of request
 
+    String doorsURL = "?doors=$doors";
+    String windowsURL = "&windows=$windows";
+    String heightURL = "&height=${widget.height}";
+    String widthURL = "&width=${widget.width}";
+
     final request = http.MultipartRequest(
-        "POST",
-        Uri.parse(pathUpload +
-            "?doors=" +
-            Doors.toString() +
-            "&windows=" +
-            Windows.toString() +
-            "&height=" +
-            widget.height.toString() +
-            "&width=" +
-            widget.width.toString()));
+      "POST",
+      Uri.parse(pathUpload + doorsURL + windowsURL + heightURL + widthURL),
+    );
+
     // Add the image to the request
     request.files.add(http.MultipartFile('image',
-        selectedImage!.readAsBytes().asStream(), selectedImage.lengthSync(),
-        filename: selectedImage!.path.split("/").last));
+        selectedImage.readAsBytes().asStream(), selectedImage.lengthSync(),
+        filename: selectedImage.path.split("/").last));
 
     final response = await request.send();
     // Get the answer
@@ -209,6 +210,11 @@ class _DrawImageState extends State<DrawImage> {
     imagefile = io.File(widget.imagePath);
 
     setState(() {});
+  }
+
+  void waiting() async {
+    id = await _uploadImage(imagefile!);
+    imagewall = await _downloadImage();
   }
 
   // Load image function
@@ -242,23 +248,22 @@ class _DrawImageState extends State<DrawImage> {
   }
 
   void _getEnd(DragEndDetails details) async {
-    final value = details.velocity.toString();
     setState(() {
-      if (IsDoorsAndWindows) {
+      if (isdoorsAndwindows) {
         double x2 = _positionEnd.dx - _positionStart.dx;
         double y2 = _positionEnd.dy - _positionStart.dy;
 
         Rect myRect = _positionStart & ui.Size(x2, y2);
-        Doors.add(myRect);
+        doors.add(myRect);
 
-        //print(Doors);
+        //print(doors);
       } else {
         double x2 = _positionEnd.dx - _positionStart.dx;
         double y2 = _positionEnd.dy - _positionStart.dy;
 
         Rect myRect = _positionStart & ui.Size(x2, y2);
-        Windows.add(myRect);
-        //print(Doors);
+        windows.add(myRect);
+        //print(doors);
       }
       _positionStart = const Offset(0, 0);
       _positionEnd = const Offset(0, 0);
@@ -271,6 +276,7 @@ class _DrawImageState extends State<DrawImage> {
 ################################################################
 */
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: (loading == false)
@@ -295,13 +301,13 @@ class _DrawImageState extends State<DrawImage> {
                   // Render the canvas
                   child: CustomPaint(
                     painter: FacePainter(_background, _positionStart,
-                        _positionEnd, Doors, Windows, IsDoorsAndWindows),
+                        _positionEnd, doors, windows, isdoorsAndwindows),
                   ),
                 ),
               ),
             )
           : Center(
-              child: Column(children: [
+              child: Column(children: const [
                 SizedBox(
                   height: 50,
                 ),
@@ -347,28 +353,22 @@ class _DrawImageState extends State<DrawImage> {
           child: const Icon(Icons.upload, color: Colors.white),
           label: 'Send',
           backgroundColor: Colors.red,
-          onTap: () async {
+          onTap: () {
             setState(() {
               loading = true;
             });
             //print("width  : " + widget.width.toString());
             //print("height : " + widget.height.toString());
-            id = await _uploadImage(imagefile!);
-            imagewall = await _downloadImage();
 
             setState(() {
               loading = false;
+              waiting();
             });
 
-            if (imagewall == null) {
-              print("image didn't load");
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DrawWall(imagewall, id!)),
-              );
-            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DrawWall(imagewall, id!)),
+            );
           },
         ),
       ]),

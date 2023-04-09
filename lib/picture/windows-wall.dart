@@ -1,9 +1,7 @@
 import 'dart:ui' as ui;
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.listvoids,
@@ -23,12 +21,12 @@ class FacePainter extends CustomPainter {
   final Offset positionEnd;
 
   // Color for walls
-  Color colorwalls = ui.Color.fromARGB(255, 255, 255, 255);
+  Color colorwalls = const ui.Color.fromARGB(255, 255, 255, 255);
   // Color for voids
-  Color colorvoids = ui.Color.fromARGB(255, 0, 0, 0);
+  Color colorvoids = const ui.Color.fromARGB(255, 0, 0, 0);
 
   // Main function to print on the canvas
-
+  @override
   void paint(Canvas canvas, ui.Size size) {
     // Upload image on the background
     canvas.drawImage(image, Offset.zero, Paint());
@@ -74,7 +72,6 @@ class FacePainter extends CustomPainter {
 
 class DrawWall extends StatefulWidget {
   DrawWall(this.imageWall, this.id);
-
   ui.Image imageWall;
   String id;
 
@@ -95,9 +92,9 @@ class _DrawWallState extends State<DrawWall> {
   // Which item is selected
   bool isvoidsAndwalls = false;
   // Current start position
-  Offset _positionStart = Offset(0, 0);
+  Offset _positionStart = const Offset(0, 0);
   // Current end position
-  Offset _positionEnd = Offset(0, 0);
+  Offset _positionEnd = const Offset(0, 0);
   // List of door
   List<Rect> voids = List.empty(growable: true);
   // List of wall
@@ -147,30 +144,21 @@ class _DrawWallState extends State<DrawWall> {
 
     final bytes = await selectedImage.toByteData();
 
-    final listbytes = bytes!.buffer.lengthInBytes;
+    final stream = List<int>.from(bytes!.buffer.asUint8List());
 
-    final stream = List<int>.from(bytes.buffer.asUint8List());
+    String param = "?voids=$voids&walls=$walls&ID{widget.id}";
 
-    final request = http.MultipartRequest(
-        "POST",
-        Uri.parse(pathUpload +
-            "?voids=" +
-            voids.toString() +
-            "&walls=" +
-            walls.toString() +
-            "&ID=" +
-            widget.id!));
-    // Init the Header of the request
-    final header = {"Content-type": "multipart/from-data"};
+    final request =
+        http.MultipartRequest("POST", Uri.parse(pathUpload + param));
     // Add the image to the request
     request.files.add(
         http.MultipartFile.fromBytes('image', stream, filename: "wut.png"));
     // Fill the request with the header
     // Send the request
-    final response = await request.send();
+    //final response = await request.send();
     // Get the answer
-    http.Response res = await http.Response.fromStream(response);
-    var responseBody = jsonDecode(res.body);
+    //http.Response res = await http.Response.fromStream(response);
+    //var responseBody = jsonDecode(res.body);
 
     // Update the state
     setState(() {});
@@ -223,7 +211,7 @@ class _DrawWallState extends State<DrawWall> {
                           BUILD WIDGET
 ################################################################
 */
-
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: (loading == false)
@@ -253,7 +241,7 @@ class _DrawWallState extends State<DrawWall> {
                 ),
               ),
             )
-          : Column(children: [
+          : Column(children: const [
               SizedBox(
                 height: 50,
               ),
