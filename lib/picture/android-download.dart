@@ -37,7 +37,7 @@ var items = [
 // Create a corresponding State class.
 // This class holds data related to the form.
 class EmailFormState extends State<EmailForm> {
-  Future<http.Response> createEmail(String email, String format, String ID) {
+  Future<http.Response> createEmail(String email, String format, String id) {
     return http.post(
       Uri.parse('https://shoothouse.cylab.be/android-download'),
       headers: <String, String>{

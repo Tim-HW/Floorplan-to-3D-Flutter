@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:model_viewer/model_viewer.dart';
 
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class RenderingVeiwer extends StatefulWidget {
   final String ID;
