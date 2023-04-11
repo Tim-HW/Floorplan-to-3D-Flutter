@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:model_viewer/model_viewer.dart';
 
-
 class RenderingVeiwer extends StatefulWidget {
-  final String ID;
-  const RenderingVeiwer(this.ID);
+  final String id;
+  const RenderingVeiwer(this.id);
 
   @override
   State<RenderingVeiwer> createState() => _RenderingState();
@@ -31,7 +30,7 @@ class _RenderingState extends State<RenderingVeiwer> {
         appBar: AppBar(title: const Text("3D Floorplan Viewer")),
         body: ModelViewer(
           backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-          src: 'https://shoothouse.cylab.be/android-viewer?ID=${widget.ID}',
+          src: 'https://shoothouse.cylab.be/android-viewer?ID=${widget.id}',
           alt: 'yesyes',
           ar: true,
           autoRotate: true,

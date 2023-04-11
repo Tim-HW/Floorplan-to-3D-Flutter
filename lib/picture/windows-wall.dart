@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'dart:convert';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.listvoids,
@@ -138,30 +139,18 @@ class _DrawWallState extends State<DrawWall> {
     });
   }
 
-  Future<void> _uploadImage(ui.Image selectedImage) async {
-    setState(() {}); //show loader
-    // Init the Type of request
-
-    final bytes = await selectedImage.toByteData();
-
-    final stream = List<int>.from(bytes!.buffer.asUint8List());
-
-    String param = "?voids=$voids&walls=$walls&ID${widget.id}";
-
-    final request =
-        http.MultipartRequest("POST", Uri.parse(pathUpload + param));
-    // Add the image to the request
-    request.files.add(
-        http.MultipartFile.fromBytes('image', stream, filename: "wut.png"));
-    // Fill the request with the header
-    // Send the request
-    //final response = await request.send();
-    // Get the answer
-    //http.Response res = await http.Response.fromStream(response);
-    //var responseBody = jsonDecode(res.body);
-
-    // Update the state
-    setState(() {});
+  Future<void> _uploadWalls() {
+    return http.post(
+      Uri.parse(pathUpload),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'walls': walls.toString(),
+        'voids': voids.toString(),
+        'ID': widget.id,
+      }),
+    );
   }
 
   void _getStartPosition(DragStartDetails details) async {
@@ -289,7 +278,7 @@ class _DrawWallState extends State<DrawWall> {
           onTap: () {
             loading = true;
 
-            _uploadImage(widget.imageWall);
+            _uploadWalls();
 
             loading = false;
           },
