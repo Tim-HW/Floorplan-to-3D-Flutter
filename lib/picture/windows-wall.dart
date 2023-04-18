@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'dart:convert';
+import 'windows-download.dart';
 
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.listvoids,
@@ -90,6 +91,8 @@ class _DrawWallState extends State<DrawWall> {
 
   bool loading = false;
 
+  String? response;
+
   // Which item is selected
   bool isvoidsAndwalls = false;
   // Current start position
@@ -139,8 +142,8 @@ class _DrawWallState extends State<DrawWall> {
     });
   }
 
-  Future<void> _uploadWalls() {
-    return http.post(
+  Future<String> _uploadWalls() async {
+    http.Response reponses = await http.post(
       Uri.parse(pathUpload),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -151,6 +154,11 @@ class _DrawWallState extends State<DrawWall> {
         'ID': widget.id,
       }),
     );
+    if (reponses.statusCode == 200) {
+      return reponses.body;
+    } else {
+      return "error";
+    }
   }
 
   void _getStartPosition(DragStartDetails details) async {
@@ -230,12 +238,14 @@ class _DrawWallState extends State<DrawWall> {
                 ),
               ),
             )
-          : Column(children: const [
-              SizedBox(
-                height: 50,
-              ),
-              SizedBox(width: 100, child: CircularProgressIndicator())
-            ]),
+          : Center(
+              child: Column(children: const [
+                SizedBox(
+                  height: 50,
+                ),
+                SizedBox(width: 100, child: CircularProgressIndicator())
+              ]),
+            ),
       // Add floating button to switch between voids and walls
       floatingActionButton:
           SpeedDial(icon: Icons.add, backgroundColor: Colors.red, children: [
@@ -275,12 +285,22 @@ class _DrawWallState extends State<DrawWall> {
           child: const Icon(Icons.upload, color: Colors.white),
           label: 'Send',
           backgroundColor: Colors.red,
-          onTap: () {
-            loading = true;
+          onTap: () async {
+            setState(() {
+              loading = true;
+            });
 
-            _uploadWalls();
+            String msg = await _uploadWalls();
 
             loading = false;
+
+            if (msg == 'good') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WindowsDownload(widget.id!)),
+              );
+            }
           },
         ),
       ]),
