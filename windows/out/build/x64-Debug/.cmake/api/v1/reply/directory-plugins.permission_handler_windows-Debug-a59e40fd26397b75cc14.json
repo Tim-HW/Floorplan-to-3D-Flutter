@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "plugins/permission_handler_windows",
+		"source" : "flutter/ephemeral/.plugin_symlinks/permission_handler_windows/windows"
+	}
+}

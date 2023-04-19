@@ -26,14 +26,17 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
   //   Open file picker from windows + Linux
   //-------------------------------------------------
 
-  void _getFromGalleryWindowsLinux() async {
+  Future<void> _getFromGalleryWindowsLinux() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: false,
-      dialogTitle: 'Select an image',
-      type: FileType.image,
-    );
+        allowMultiple: false,
+        dialogTitle: 'Select an image',
+        type: FileType.image,
+        allowedExtensions: ['jpg', 'png']);
 
-    if (result == null) return;
+    if (result == null) {
+      print('Imagepicker : cannot load');
+      return;
+    }
 
     PlatformFile file = result.files.single;
 
@@ -179,6 +182,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                         child: ElevatedButton(
                           onPressed: () {
                             _getFromGalleryWindowsLinux();
+                            setState(() {});
                           },
                           style: ButtonStyle(
                               backgroundColor:

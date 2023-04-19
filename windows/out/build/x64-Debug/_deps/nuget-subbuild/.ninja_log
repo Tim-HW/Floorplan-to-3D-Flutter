@@ -1,0 +1,24 @@
+# ninja log v5
+1	62	7035983868183770	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-mkdir	2553730ac64f80ab
+1	62	7035983868183770	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-mkdir	2553730ac64f80ab
+63	2981	7035983897366917	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-download	be2f6c9798893c72
+63	2981	7035983897366917	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-download	be2f6c9798893c72
+2982	3040	7035983897960018	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-update	75d533ae298ab893
+2982	3040	7035983897960018	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-update	75d533ae298ab893
+3040	3093	7035983898485688	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-patch	658e742ac0d3a501
+3040	3093	7035983898485688	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-patch	658e742ac0d3a501
+3094	3166	7035983899215340	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-copyfile	2fef8c6961c845e1
+3094	3166	7035983899215340	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-src/nuget.exe	2fef8c6961c845e1
+3094	3166	7035983899215340	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-copyfile	2fef8c6961c845e1
+3166	3220	7035983899758362	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-configure	43a2e1d000467e02
+3166	3220	7035983899758362	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-configure	43a2e1d000467e02
+3221	3276	7035983900315905	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-build	a256db00a5fddf9
+3221	3276	7035983900315905	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-build	a256db00a5fddf9
+3276	3333	7035983900880041	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-install	c86dea1899134b3b
+3276	3333	7035983900880041	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-install	c86dea1899134b3b
+3333	3388	7035983901442116	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-test	8869ead0435cef57
+3333	3388	7035983901442116	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-test	8869ead0435cef57
+3388	3470	7035983902260617	CMakeFiles/nuget-populate-complete	ee64aeae0704b336
+3388	3470	7035983902260617	nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-done	ee64aeae0704b336
+3388	3470	7035983902260617	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/CMakeFiles/nuget-populate-complete	ee64aeae0704b336
+3388	3470	7035983902260617	C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-done	ee64aeae0704b336

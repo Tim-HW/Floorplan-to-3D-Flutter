@@ -1,0 +1,15 @@
+# Target labels
+ nuget-populate
+# Source files and their labels
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/CMakeFiles/nuget-populate
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/CMakeFiles/nuget-populate.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/CMakeFiles/nuget-populate-complete.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-build.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-configure.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-copyfile.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-download.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-install.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-mkdir.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-patch.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-test.rule
+C:/Users/hollo/Documents/flutter-app/windows/out/build/x64-Debug/_deps/nuget-subbuild/nuget-populate-prefix/src/nuget-populate-stamp/nuget-populate-update.rule

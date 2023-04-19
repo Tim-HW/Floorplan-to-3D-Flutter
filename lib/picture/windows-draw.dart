@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'windows-wall.dart';
 
 class FacePainter extends CustomPainter {
@@ -94,8 +95,11 @@ class _DrawImageState extends State<DrawImage> {
   String pathDownload = 'https://shoothouse.cylab.be/windows-wall';
 
   io.File? imagefile;
+  // Image
   late ui.Image imagewall;
+  // When turned True show a loading screen to the user
   bool loading = false;
+  // Image ID
   String? id;
 
   // Backgronud image
@@ -120,17 +124,26 @@ class _DrawImageState extends State<DrawImage> {
   @override
   // Init function to load the background
   void initState() {
+    loading = true;
     _asyncInit();
+    loading = false;
+    setState(() {});
   }
 
   // Function to load the Background
   _asyncInit() async {
-    setState(() {});
+    setState(() {
+      loading = true;
+    });
     // Update the variable
+    print(widget.imagePath);
+
     _background = await _loadImage(widget.imagePath);
     imagefile = io.File(widget.imagePath);
 
-    setState(() {});
+    setState(() {
+      loading = false;
+    });
   }
 
   // Function to change the door/window selection
@@ -217,14 +230,14 @@ class _DrawImageState extends State<DrawImage> {
 
   // Load image function
   Future<ui.Image> _loadImage(imageString) async {
-    ByteData bd = await rootBundle.load(imageString);
+    ByteData f = ByteData.view(io.File(imageString).readAsBytesSync().buffer);
     // ByteData bd = await rootBundle.load("graphics/bar-1920×1080.jpg");
-    final Uint8List bytes = Uint8List.view(bd.buffer);
+    final Uint8List bytes = Uint8List.view(f.buffer);
     final ui.Codec codec = await ui.instantiateImageCodec(bytes,
         targetHeight: widget.height.toInt(), targetWidth: widget.width.toInt());
     final ui.Image image = (await codec.getNextFrame()).image;
+    //return image;
     return image;
-    // setState(() => imageStateVarible = image);
   }
 
   void _getStartPosition(DragStartDetails details) async {
