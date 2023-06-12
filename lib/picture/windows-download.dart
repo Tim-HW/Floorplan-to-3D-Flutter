@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../home.dart';
 
 class WindowsDownload extends StatelessWidget {
   const WindowsDownload(this.id, {super.key});
@@ -27,6 +28,11 @@ class WindowsDownload extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               _launchUrl();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const Home()),
+              );
             },
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red)),

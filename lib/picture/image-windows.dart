@@ -127,7 +127,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                                 finalWidth = imageWidth.toDouble();
                                 finalHeight = imageHeight.toDouble();
 
-                                reseize(imageHeight, imageWidth);
+                                //reseize(imageHeight, imageWidth);
 
                                 isLoading = false;
 
