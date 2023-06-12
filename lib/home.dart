@@ -4,8 +4,6 @@ import 'package:floorplan2vr/information.dart';
 import 'package:floorplan2vr/picture/image-android.dart';
 import 'package:flutter/material.dart';
 import 'picture/image-windows.dart';
-import 'picture/image-android.dart';
-import 'picture/windows-draw.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -22,7 +20,7 @@ class _HomeState extends State<Home> {
   ];
 
   final List _screensAndroid = [
-    ImageInputAndroid(),
+    const ImageInputAndroid(),
     const Information(),
   ];
 

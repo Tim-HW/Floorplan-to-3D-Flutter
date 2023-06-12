@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:model_viewer/model_viewer.dart';
 
 class RenderingVeiwer extends StatefulWidget {
   final String id;
-  const RenderingVeiwer(this.id);
+  const RenderingVeiwer(this.id, {super.key});
 
   @override
   State<RenderingVeiwer> createState() => _RenderingState();

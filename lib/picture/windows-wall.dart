@@ -73,7 +73,7 @@ class FacePainter extends CustomPainter {
 }
 
 class DrawWall extends StatefulWidget {
-  DrawWall(this.imageWall, this.id);
+  DrawWall(this.imageWall, this.id, {super.key});
   ui.Image imageWall;
   String id;
 
@@ -239,7 +239,7 @@ class _DrawWallState extends State<DrawWall> {
               ),
             )
           : Center(
-              child: Column(children: const [
+              child: Column(children: [
                 SizedBox(
                   height: 50,
                 ),
@@ -298,7 +298,7 @@ class _DrawWallState extends State<DrawWall> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => WindowsDownload(widget.id!)),
+                    builder: (context) => WindowsDownload(widget.id)),
               );
             }
           },

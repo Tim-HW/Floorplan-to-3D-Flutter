@@ -108,9 +108,9 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                                             MaterialStateProperty.all(
                                                 Colors.red)),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(10),
+                                      padding: EdgeInsets.all(10),
                                       child: Row(
-                                        children: const [
+                                        children: [
                                           Icon(Icons.upgrade),
                                           Text('Run')
                                         ],
@@ -123,7 +123,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                           //-------------------------------------------------
                           //         If the image selected and uploaded
                           //-------------------------------------------------
-                          : Column(children: const [
+                          : Column(children: [
                               SizedBox(
                                 height: 50,
                               ),
@@ -137,7 +137,7 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                       //-------------------------------------------------
                       : (message == 'ERROR')
                           ? Column(
-                              children: const [
+                              children: [
                                 SizedBox(
                                   height: 20,
                                 ),
@@ -172,9 +172,9 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                                             MaterialStateProperty.all(
                                                 Colors.red)),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(4),
+                                      padding: EdgeInsets.all(4),
                                       child: Row(
-                                        children: const [
+                                        children: [
                                           Icon(Icons.remove_red_eye),
                                           Text('       Open 3D viewer')
                                         ],
@@ -204,9 +204,9 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                                             MaterialStateProperty.all(
                                                 Colors.red)),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(4),
+                                      padding: EdgeInsets.all(4),
                                       child: Row(
-                                        children: const [
+                                        children: [
                                           Icon(Icons.download),
                                           Text('       Download')
                                         ],
@@ -243,9 +243,9 @@ class _ImageInputAndroidState extends State<ImageInputAndroid> {
                           backgroundColor:
                               MaterialStateProperty.all(Colors.red)),
                       child: Padding(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4),
                         child: Row(
-                          children: const [
+                          children: [
                             Icon(Icons.upload_file),
                             Text(' Upload')
                           ],

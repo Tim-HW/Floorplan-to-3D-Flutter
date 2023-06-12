@@ -1,10 +1,11 @@
-import 'package:floorplan2vr/information.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RMAInfo extends StatelessWidget {
   // This widget is the root of your application.
   final Uri _url = Uri.parse('https://www.rma.ac.be/');
+
+  RMAInfo({super.key});
 
   Future<void> _launchUrl() async {
     if (!await launchUrl(_url)) {
@@ -63,9 +64,9 @@ class RMAInfo extends StatelessWidget {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red)),
                 child: Padding(
-                  padding: const EdgeInsets.all(4),
+                  padding: EdgeInsets.all(4),
                   child: Row(
-                    children: const [Icon(Icons.touch_app), Text('Visit')],
+                    children: [Icon(Icons.touch_app), Text('Visit')],
                   ),
                 ),
               ),

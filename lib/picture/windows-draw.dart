@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'windows-wall.dart';
 
 class FacePainter extends CustomPainter {
@@ -76,7 +75,7 @@ class FacePainter extends CustomPainter {
 }
 
 class DrawImage extends StatefulWidget {
-  const DrawImage(this.imagePath, this.height, this.width);
+  const DrawImage(this.imagePath, this.height, this.width, {super.key});
   final String imagePath;
   final double height;
   final double width;
@@ -318,7 +317,7 @@ class _DrawImageState extends State<DrawImage> {
               ),
             )
           : Center(
-              child: Column(children: const [
+              child: Column(children: [
                 SizedBox(
                   height: 50,
                 ),

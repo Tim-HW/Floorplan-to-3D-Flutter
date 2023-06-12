@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WindowsDownload extends StatelessWidget {
-  WindowsDownload(this.id);
+  WindowsDownload(this.id, {super.key});
   final String id;
-  final Uri _url =
-      Uri.parse('https://www.defence-institute.be/en/accueil-english/');
 
   Future<void> _launchUrl() async {
+    final Uri _url =
+        Uri.parse('https://shoothouse.cylab.be/windows-download?id=$id');
     if (!await launchUrl(_url)) {
       throw 'Could not launch $_url';
     }
@@ -31,9 +31,9 @@ class WindowsDownload extends StatelessWidget {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red)),
             child: Padding(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
               child: Row(
-                children: const [Icon(Icons.upgrade), Text('Download')],
+                children: [Icon(Icons.upgrade), Text('Download')],
               ),
             ),
           ),

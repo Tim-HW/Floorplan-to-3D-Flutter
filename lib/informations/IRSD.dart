@@ -1,4 +1,3 @@
-import 'package:floorplan2vr/information.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -7,6 +6,8 @@ class IRSD extends StatelessWidget {
 
   final Uri _url =
       Uri.parse('https://www.defence-institute.be/en/accueil-english/');
+
+  IRSD({super.key});
 
   Future<void> _launchUrl() async {
     if (!await launchUrl(_url)) {
@@ -49,7 +50,7 @@ class IRSD extends StatelessWidget {
               height: 10,
             ), //SizedBox
             const Text(
-              'This research has been founded by the Royal Higher Institute for Defense (RHID) : It is the reference body of the Belgian Ministry of Defence in the field of security and defence (Royal Decree of 10 August 2006). The RHID assumes two interlinked roles in support of the Ministry of Defence and of the Nation. First, in its role as a “think tank” for security and defence, it realises the objectives of deepening and disseminating knowledge by organising conferences, colloquia and seminars as well as publishing papers by researchers. The High Studies for Security and Defence, in the form of a course composed of residential seminars and visits, provides training in these fields for high-level staff, both from Defence and the civil sector, and promotes reflexion, debate and networking between participants. Through national and international partnerships, the RHID has developed an extensive network to exchange ideas and experiences. ',
+              'This research has been founded by the Royal Higher Institute for Defense (RHID) : It is the reference body of the Belgian Ministry of Defence in the field of security and defence (Royal Decree of 10 August 2006). The RHID assumes two interlinked roles in support of the Ministry of Defence and of the Nation. First, in its role as a “think tank” for security and defence, it realises the objectives of deepening and disseminating knowledge by organising conferences, colloquia and seminars as well as publishing papers by researchers. The High Studies for Security and Defence, in the form of a course composed of residential seminars and visits, provides training in these fields for high-level staff, both from Defence and the civil sector, and promotes reflexion, debate and networking between participants.',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.red,
@@ -65,9 +66,9 @@ class IRSD extends StatelessWidget {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red)),
                 child: Padding(
-                  padding: const EdgeInsets.all(4),
+                  padding: EdgeInsets.all(4),
                   child: Row(
-                    children: const [Icon(Icons.touch_app), Text('Visit')],
+                    children: [Icon(Icons.touch_app), Text('Visit')],
                   ),
                 ),
               ),

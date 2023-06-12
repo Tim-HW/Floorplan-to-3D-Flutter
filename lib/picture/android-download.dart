@@ -6,7 +6,7 @@ import '../home.dart';
 
 // Create a Form widget.
 class EmailForm extends StatefulWidget {
-  const EmailForm(this.id);
+  const EmailForm(this.id, {super.key});
 
   final String id;
 
@@ -144,7 +144,7 @@ class EmailFormState extends State<EmailForm> {
                       }
                     },
                     child: Row(
-                      children: const [
+                      children: [
                         Icon(Icons.email_outlined),
                         Text('   Send via email')
                       ],

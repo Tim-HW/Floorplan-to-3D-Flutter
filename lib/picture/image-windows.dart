@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -78,7 +77,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
       ),
       child: Center(
         child: (isLoading)
-            ? Column(children: const [
+            ? Column(children: [
                 SizedBox(
                   height: 50,
                 ),
@@ -147,12 +146,9 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                                   backgroundColor:
                                       MaterialStateProperty.all(Colors.red)),
                               child: Padding(
-                                padding: const EdgeInsets.all(10),
+                                padding: EdgeInsets.all(10),
                                 child: Row(
-                                  children: const [
-                                    Icon(Icons.upgrade),
-                                    Text('Run')
-                                  ],
+                                  children: [Icon(Icons.upgrade), Text('Run')],
                                 ),
                               ),
                             ),
@@ -188,9 +184,9 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.red)),
                           child: Padding(
-                            padding: const EdgeInsets.all(4),
+                            padding: EdgeInsets.all(4),
                             child: Row(
-                              children: const [
+                              children: [
                                 Icon(Icons.upload_file),
                                 Text(' Upload')
                               ],

@@ -17,7 +17,7 @@ class Information extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(8),
         children: <Widget>[
-          Center(
+           Center(
             child: (Column(
               children: [XRInfo(), RMAInfo(), IRSD()],
             )),
