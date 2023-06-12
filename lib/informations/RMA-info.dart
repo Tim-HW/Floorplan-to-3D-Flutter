@@ -64,9 +64,9 @@ class RMAInfo extends StatelessWidget {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red)),
                 child: Padding(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: Row(
-                    children: [Icon(Icons.touch_app), Text('Visit')],
+                    children: const [Icon(Icons.touch_app), Text('Visit')],
                   ),
                 ),
               ),

@@ -239,7 +239,7 @@ class _DrawWallState extends State<DrawWall> {
               ),
             )
           : Center(
-              child: Column(children: [
+              child: Column(children: const [
                 SizedBox(
                   height: 50,
                 ),

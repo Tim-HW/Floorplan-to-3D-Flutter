@@ -144,7 +144,7 @@ class EmailFormState extends State<EmailForm> {
                       }
                     },
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.email_outlined),
                         Text('   Send via email')
                       ],

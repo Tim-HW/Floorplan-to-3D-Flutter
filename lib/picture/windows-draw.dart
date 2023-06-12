@@ -317,7 +317,7 @@ class _DrawImageState extends State<DrawImage> {
               ),
             )
           : Center(
-              child: Column(children: [
+              child: Column(children: const [
                 SizedBox(
                   height: 50,
                 ),

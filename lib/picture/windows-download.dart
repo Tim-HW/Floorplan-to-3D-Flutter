@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WindowsDownload extends StatelessWidget {
-  WindowsDownload(this.id, {super.key});
+  const WindowsDownload(this.id, {super.key});
   final String id;
 
   Future<void> _launchUrl() async {
@@ -31,9 +31,9 @@ class WindowsDownload extends StatelessWidget {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red)),
             child: Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Row(
-                children: [Icon(Icons.upgrade), Text('Download')],
+                children: const [Icon(Icons.upgrade), Text('Download')],
               ),
             ),
           ),

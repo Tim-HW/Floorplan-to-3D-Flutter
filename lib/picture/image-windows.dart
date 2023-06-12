@@ -33,7 +33,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
         allowedExtensions: ['jpg', 'png']);
 
     if (result == null) {
-      print('Imagepicker : cannot load');
+      //print('Imagepicker : cannot load');
       return;
     }
 
@@ -77,7 +77,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
       ),
       child: Center(
         child: (isLoading)
-            ? Column(children: [
+            ? Column(children: const [
                 SizedBox(
                   height: 50,
                 ),
@@ -146,9 +146,12 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                                   backgroundColor:
                                       MaterialStateProperty.all(Colors.red)),
                               child: Padding(
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 child: Row(
-                                  children: [Icon(Icons.upgrade), Text('Run')],
+                                  children: const [
+                                    Icon(Icons.upgrade),
+                                    Text('Run')
+                                  ],
                                 ),
                               ),
                             ),
@@ -186,7 +189,7 @@ class _ImageInputWindowsState extends State<ImageInputWindows> {
                           child: Padding(
                             padding: EdgeInsets.all(4),
                             child: Row(
-                              children: [
+                              children: const [
                                 Icon(Icons.upload_file),
                                 Text(' Upload')
                               ],
