@@ -235,6 +235,8 @@ class _DrawImageState extends State<DrawImage> {
     final ui.Codec codec = await ui.instantiateImageCodec(bytes,
         targetHeight: widget.height.toInt(), targetWidth: widget.width.toInt());
     final ui.Image image = (await codec.getNextFrame()).image;
+    print("image height is : " + widget.height.toString());
+    print("image width is  : " + widget.width.toString());
     //return image;
     return image;
   }
@@ -244,7 +246,7 @@ class _DrawImageState extends State<DrawImage> {
     setState(() {
       _positionStart = Offset(tapPosition.dx, tapPosition.dy);
 
-      //print('Start : ' + _PositionStart.toString());
+      print('Start : ' + tapPosition.toString());
     });
   }
 
@@ -253,7 +255,7 @@ class _DrawImageState extends State<DrawImage> {
     setState(() {
       _positionEnd = Offset(tapPosition.dx, tapPosition.dy);
 
-      //print('End : ' + tapPosition.toString());
+      print('End : ' + tapPosition.toString());
     });
   }
 
@@ -262,6 +264,9 @@ class _DrawImageState extends State<DrawImage> {
       if (isdoorsAndwindows) {
         double x2 = _positionEnd.dx - _positionStart.dx;
         double y2 = _positionEnd.dy - _positionStart.dy;
+
+        print('width  is : ' + x2.toString() + ' ');
+        print('height is : ' + y2.toString() + ' ');
 
         Rect myRect = _positionStart & ui.Size(x2, y2);
         doors.add(myRect);
