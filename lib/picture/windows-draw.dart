@@ -208,6 +208,8 @@ class _DrawImageState extends State<DrawImage> {
     String heightURL = "&height=${widget.height}";
     String widthURL = "&width=${widget.width}";
 
+    print("Doors URL : " + doorsURL);
+
     final request = http.MultipartRequest(
       "POST",
       Uri.parse(pathUpload + doorsURL + windowsURL + heightURL + widthURL),
@@ -235,9 +237,8 @@ class _DrawImageState extends State<DrawImage> {
     final ui.Codec codec = await ui.instantiateImageCodec(bytes,
         targetHeight: widget.height.toInt(), targetWidth: widget.width.toInt());
     final ui.Image image = (await codec.getNextFrame()).image;
-    print("image height is : " + widget.height.toString());
-    print("image width is  : " + widget.width.toString());
-    //return image;
+    //print("image height is : " + widget.height.toString());
+    //print("image width is  : " + widget.width.toString());
     return image;
   }
 

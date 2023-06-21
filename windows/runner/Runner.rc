@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "floorplan2vr" "\0"
+            VALUE "FileDescription", "application" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "floorplan2vr" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "floorplan2vr.exe" "\0"
-            VALUE "ProductName", "floorplan2vr" "\0"
+            VALUE "InternalName", "application" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
+            VALUE "OriginalFilename", "application.exe" "\0"
+            VALUE "ProductName", "application" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
