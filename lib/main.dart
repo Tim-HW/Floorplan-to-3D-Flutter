@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Floorplans 2 VR - RMA',
+        title: ' Floorplans 2 VR - RMA',
         theme: ThemeData(
           // This is the theme of your application.
           //

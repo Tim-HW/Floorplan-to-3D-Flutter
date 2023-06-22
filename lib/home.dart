@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
     return (io.Platform.isWindows || io.Platform.isLinux)
         ? Scaffold(
             appBar: AppBar(
-              title: const Center(child: Text("Floorplans 2 Mesh")),
+              title: const Center(child: Text("Floorplans → Mesh")),
             ),
             body: _screensWindows[_currentIndex],
             bottomNavigationBar: BottomNavigationBar(

@@ -34,9 +34,31 @@ class FacePainter extends CustomPainter {
   void paint(Canvas canvas, ui.Size size) {
     // Upload image on the background
     canvas.drawImage(image, Offset.zero, Paint());
+
+    var style = const TextStyle(
+      color: ui.Color.fromARGB(255, 180, 0, 0),
+    );
+
     // Render the door list
     for (var i = 0; i < listdoors.length; i++) {
       canvas.drawRect(listdoors[i], Paint()..color = colordoors);
+
+      final ui.ParagraphBuilder paragraphBuilder = ui.ParagraphBuilder(
+        ui.ParagraphStyle(
+          fontSize: style.fontSize,
+          fontFamily: style.fontFamily,
+          fontStyle: style.fontStyle,
+          fontWeight: style.fontWeight,
+          textAlign: TextAlign.justify,
+        ),
+      )
+        ..pushStyle(style.getTextStyle())
+        ..addText('→');
+      final ui.Paragraph paragraph = paragraphBuilder.build()
+        ..layout(ui.ParagraphConstraints(width: size.width));
+
+      final position = Offset(listdoors[i].left, listdoors[i].bottom);
+      canvas.drawParagraph(paragraph, position);
     }
     // Render the Window list
     for (var j = 0; j < listWindow.length; j++) {
@@ -111,8 +133,10 @@ class _DrawImageState extends State<DrawImage> {
   Offset _positionEnd = const Offset(0, 0);
   // List of door
   List<Rect> doors = List.empty(growable: true);
+  List<int> doorsOrientation = List.empty(growable: true);
   // List of window
   List<Rect> windows = List.empty(growable: true);
+  List<int> windowsOrientation = List.empty(growable: true);
 
   /*
 ################################################################
@@ -174,7 +198,9 @@ class _DrawImageState extends State<DrawImage> {
     setState(() {
       // Update the variable
       doors = List.empty(growable: true);
+      doorsOrientation = List.empty(growable: true);
       windows = List.empty(growable: true);
+      windowsOrientation = List.empty(growable: true);
     });
   }
 
@@ -266,11 +292,17 @@ class _DrawImageState extends State<DrawImage> {
         double x2 = _positionEnd.dx - _positionStart.dx;
         double y2 = _positionEnd.dy - _positionStart.dy;
 
-        print('width  is : ' + x2.toString() + ' ');
-        print('height is : ' + y2.toString() + ' ');
+        //print('width  is : ' + x2.toString() + ' ');
+        //print('height is : ' + y2.toString() + ' ');
 
         Rect myRect = _positionStart & ui.Size(x2, y2);
         doors.add(myRect);
+
+        if (x2 > y2) {
+          doorsOrientation.add(1);
+        } else {
+          doorsOrientation.add(0);
+        }
 
         //print(doors);
       } else {
@@ -280,6 +312,11 @@ class _DrawImageState extends State<DrawImage> {
         Rect myRect = _positionStart & ui.Size(x2, y2);
         windows.add(myRect);
         //print(doors);
+        if (x2 > y2) {
+          windowsOrientation.add(1);
+        } else {
+          windowsOrientation.add(0);
+        }
       }
       _positionStart = const Offset(0, 0);
       _positionEnd = const Offset(0, 0);
