@@ -7,14 +7,40 @@ import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'windows-wall.dart';
 
+ui.ParagraphBuilder vector(int direction) {
+  var style =
+      const TextStyle(color: ui.Color.fromARGB(255, 180, 0, 0), fontSize: 30);
+  final ui.ParagraphBuilder paragraphBuilder = ui.ParagraphBuilder(
+    ui.ParagraphStyle(
+      fontSize: style.fontSize,
+      fontFamily: style.fontFamily,
+      fontStyle: style.fontStyle,
+      fontWeight: style.fontWeight,
+      textAlign: TextAlign.justify,
+    ),
+  )..pushStyle(style.getTextStyle());
+  if (direction == 0) {
+    paragraphBuilder.addText("→");
+  } else if (direction == 1) {
+    paragraphBuilder.addText("↑");
+  } else if (direction == 2) {
+    paragraphBuilder.addText("←");
+  } else if (direction == 3) {
+    paragraphBuilder.addText("↓");
+  }
+
+  return paragraphBuilder;
+}
+
 class FacePainter extends CustomPainter {
   FacePainter(this.image, this.positionStart, this.positionEnd, this.listdoors,
-      this.listWindow, this.isADoor);
+      this.listWindow, this.isADoor, this.doorsOrientation);
 
   // To know if the door/windows is selected
   final bool isADoor;
   // List of doors
   final List<Rect> listdoors;
+  final List<int> doorsOrientation;
   // List of windows
   final List<Rect> listWindow;
   // Background Image
@@ -35,29 +61,16 @@ class FacePainter extends CustomPainter {
     // Upload image on the background
     canvas.drawImage(image, Offset.zero, Paint());
 
-    var style = const TextStyle(
-      color: ui.Color.fromARGB(255, 180, 0, 0),
-    );
-
     // Render the door list
     for (var i = 0; i < listdoors.length; i++) {
       canvas.drawRect(listdoors[i], Paint()..color = colordoors);
 
-      final ui.ParagraphBuilder paragraphBuilder = ui.ParagraphBuilder(
-        ui.ParagraphStyle(
-          fontSize: style.fontSize,
-          fontFamily: style.fontFamily,
-          fontStyle: style.fontStyle,
-          fontWeight: style.fontWeight,
-          textAlign: TextAlign.justify,
-        ),
-      )
-        ..pushStyle(style.getTextStyle())
-        ..addText('→');
-      final ui.Paragraph paragraph = paragraphBuilder.build()
+      ui.ParagraphBuilder para = vector(doorsOrientation[i]);
+
+      final ui.Paragraph paragraph = para.build()
         ..layout(ui.ParagraphConstraints(width: size.width));
 
-      final position = Offset(listdoors[i].left, listdoors[i].bottom);
+      final position = listdoors[i].center;
       canvas.drawParagraph(paragraph, position);
     }
     // Render the Window list
@@ -88,7 +101,8 @@ class FacePainter extends CustomPainter {
         positionEnd != oldDelegate.positionEnd ||
         listdoors != oldDelegate.listdoors ||
         listWindow != oldDelegate.listWindow ||
-        isADoor != oldDelegate.isADoor) {
+        isADoor != oldDelegate.isADoor ||
+        doorsOrientation != oldDelegate.doorsOrientation) {
       return true;
     } else {
       return false;
@@ -136,7 +150,6 @@ class _DrawImageState extends State<DrawImage> {
   List<int> doorsOrientation = List.empty(growable: true);
   // List of window
   List<Rect> windows = List.empty(growable: true);
-  List<int> windowsOrientation = List.empty(growable: true);
 
   /*
 ################################################################
@@ -200,7 +213,20 @@ class _DrawImageState extends State<DrawImage> {
       doors = List.empty(growable: true);
       doorsOrientation = List.empty(growable: true);
       windows = List.empty(growable: true);
-      windowsOrientation = List.empty(growable: true);
+    });
+  }
+
+  void _rotate() {
+    setState(() {
+      if (doorsOrientation.last == 0) {
+        doorsOrientation.last = 2;
+      } else if (doorsOrientation.last == 2) {
+        doorsOrientation.last = 0;
+      } else if (doorsOrientation.last == 1) {
+        doorsOrientation.last = 3;
+      } else if (doorsOrientation.last == 3) {
+        doorsOrientation.last = 1;
+      }
     });
   }
 
@@ -231,14 +257,20 @@ class _DrawImageState extends State<DrawImage> {
 
     String doorsURL = "?doors=$doors";
     String windowsURL = "&windows=$windows";
+    String doorOrientationURL = "&doororientation=$doorsOrientation";
     String heightURL = "&height=${widget.height}";
     String widthURL = "&width=${widget.width}";
 
-    print("Doors URL : " + doorsURL);
+    //print("Doors URL : " + doorsURL);
 
     final request = http.MultipartRequest(
       "POST",
-      Uri.parse(pathUpload + doorsURL + windowsURL + heightURL + widthURL),
+      Uri.parse(pathUpload +
+          doorsURL +
+          windowsURL +
+          heightURL +
+          widthURL +
+          doorOrientationURL),
     );
 
     // Add the image to the request
@@ -273,7 +305,7 @@ class _DrawImageState extends State<DrawImage> {
     setState(() {
       _positionStart = Offset(tapPosition.dx, tapPosition.dy);
 
-      print('Start : ' + tapPosition.toString());
+      //print('Start : ' + tapPosition.toString());
     });
   }
 
@@ -298,7 +330,7 @@ class _DrawImageState extends State<DrawImage> {
         Rect myRect = _positionStart & ui.Size(x2, y2);
         doors.add(myRect);
 
-        if (x2 > y2) {
+        if (x2.abs() > y2.abs()) {
           doorsOrientation.add(1);
         } else {
           doorsOrientation.add(0);
@@ -312,11 +344,6 @@ class _DrawImageState extends State<DrawImage> {
         Rect myRect = _positionStart & ui.Size(x2, y2);
         windows.add(myRect);
         //print(doors);
-        if (x2 > y2) {
-          windowsOrientation.add(1);
-        } else {
-          windowsOrientation.add(0);
-        }
       }
       _positionStart = const Offset(0, 0);
       _positionEnd = const Offset(0, 0);
@@ -353,8 +380,14 @@ class _DrawImageState extends State<DrawImage> {
                       .height, //_background.height.toDouble(),
                   // Render the canvas
                   child: CustomPaint(
-                    painter: FacePainter(_background, _positionStart,
-                        _positionEnd, doors, windows, isdoorsAndwindows),
+                    painter: FacePainter(
+                        _background,
+                        _positionStart,
+                        _positionEnd,
+                        doors,
+                        windows,
+                        isdoorsAndwindows,
+                        doorsOrientation),
                   ),
                 ),
               ),
@@ -400,6 +433,14 @@ class _DrawImageState extends State<DrawImage> {
           backgroundColor: Colors.red,
           onTap: () {
             _erasedall();
+          },
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.autorenew_rounded, color: Colors.white),
+          label: 'Rotate door opening',
+          backgroundColor: Colors.red,
+          onTap: () {
+            _rotate();
           },
         ),
         SpeedDialChild(
