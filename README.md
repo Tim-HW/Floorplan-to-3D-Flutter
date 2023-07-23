@@ -1,6 +1,6 @@
 # floorplan2vr
 
-A new Flutter project.
+Android Application to transform floorplan to 3D
 
 ## Getting Started
 
