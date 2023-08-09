@@ -3,8 +3,8 @@
 Android Application to transform floorplan to 3D. This program is only the front-end that allows you to select the image from a photo or the gallery and send it to the server that gives you back the 3D model. The application features, a 3D vision of the floorplan as well as download methods to get the 3D model.
 
 <a href="https://github.com/PRBonn/kiss-icp/blob/main/LICENSE"><img src="https://img.shields.io/github/license/PRBonn/kiss-icp" /></a>
-<a href="https://github.com/PRBonn/kiss-icp/blob/main/LICENSE"><img src="https://img.shields.io/badge/OS-Android-blue" /></a>
-<a href="https://github.com/PRBonn/kiss-icp/blob/main/LICENSE"><img src="https://img.shields.io/badge/Flutter-green" /></a>
+<a href="https://github.com/PRBonn/kiss-icp/blob/main/LICENSE"><img src="https://img.shields.io/badge/Os-Android-blue" /></a>
+<a href="https://github.com/PRBonn/kiss-icp/blob/main/LICENSE"><img src="https://img.shields.io/badge/Flutter-purple" /></a>
 
 
 
